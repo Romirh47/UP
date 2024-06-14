@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Matdash Free</title>
+  <title>IOT PANEL</title>
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
 </head>
@@ -26,7 +26,7 @@
           </div>
         </div>
         <!-- Sidebar navigation-->
-       @include('sidebar')
+       @include('pages.dashboard.sidebar')
         <!-- End Sidebar navigation -->
       </div>
       <!-- End Sidebar scroll-->
@@ -69,40 +69,8 @@
       <!--  Header End -->
       <div class="body-wrapper-inner">
         <div class="container-fluid">
-          <!--  Row 1 -->
-            <div class="col-lg-4">
-              <div class="card overflow-hidden hover-img">
-                <div class="position-relative">
-                  <a href="javascript:void(0)">
-                    <img src="../assets/images/blog/blog-img3.jpg" class="card-img-top" alt="matdash-img">
-                  </a>
-                  <span
-                    class="badge text-bg-light text-dark fs-2 lh-sm mb-9 me-9 py-1 px-2 fw-semibold position-absolute bottom-0 end-0">2
-                    min Read</span>
-                  <img src="../assets/images/profile/user-3.jpg" alt="matdash-img"
-                    class="img-fluid rounded-circle position-absolute bottom-0 start-0 mb-n9 ms-9" width="40"
-                    height="40" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Georgeanna Ramero">
-                </div>
-                <div class="card-body p-4">
-                  <span class="badge text-bg-light fs-2 py-1 px-2 lh-sm  mt-3">Health</span>
-                  <a class="d-block my-4 fs-5 text-dark fw-semibold link-primary" href="">bacottttt goblokk
-                    lockdowns
-                    loom in China</a>
-                  <div class="d-flex align-items-center gap-4">
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="ti ti-eye text-dark fs-5"></i>9,480
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="ti ti-message-2 text-dark fs-5"></i>12
-                    </div>
-                    <div class="d-flex align-items-center fs-2 ms-auto">
-                      <i class="ti ti-point text-dark"></i>Sat, Dec 17
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    @yield('content')
+
   <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
   <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/js/sidebarmenu.js"></script>
