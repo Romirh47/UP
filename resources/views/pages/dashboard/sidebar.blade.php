@@ -26,7 +26,7 @@
            <span class="hide-menu">Home</span>
          </li>
          <li class="sidebar-item">
-           <a class="sidebar-link" href="./index.html" aria-expanded="false">
+           <a class="sidebar-link" href="{{route('dashboard')}}" aria-expanded="false">
              <iconify-icon icon="solar:widget-add-line-duotone"></iconify-icon>
              <span class="hide-menu">Dashboard</span>
            </a>
@@ -41,25 +41,25 @@
            <span class="hide-menu">SENSORS</span>
          </li>
          <li class="sidebar-item">
-           <a class="sidebar-link" href="./ui-buttons.html" aria-expanded="false">
+           <a class="sidebar-link" href="{{route('temperatures.index')}}" aria-expanded="false">
              <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
              <span class="hide-menu">TEMPERATURE</span>
            </a>
          </li>
          <li class="sidebar-item">
-           <a class="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
+           <a class="sidebar-link" href="{{route('humidities.index')}}" aria-expanded="false">
              <iconify-icon icon="solar:danger-circle-line-duotone"></iconify-icon>
              <span class="hide-menu">HUMIDITY</span>
            </a>
          </li>
          <li class="sidebar-item">
-           <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
+           <a class="sidebar-link" href="{{route('intensities.index')}}" aria-expanded="false">
              <iconify-icon icon="solar:bookmark-square-minimalistic-line-duotone"></iconify-icon>
              <span class="hide-menu">INTENSITY</span>
            </a>
          </li>
          <li class="sidebar-item">
-           <a class="sidebar-link" href="./ui-forms.html" aria-expanded="false">
+           <a class="sidebar-link" href="{{route('moistures.index')}}" aria-expanded="false">
              <iconify-icon icon="solar:file-text-line-duotone"></iconify-icon>
              <span class="hide-menu">MOISTURES</span>
            </a>
@@ -74,7 +74,7 @@
            <span class="hide-menu">AKTUATOR</span>
          </li>
          <li class="sidebar-item">
-           <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+           <a class="sidebar-link" href="{{route('actuators.index')}}" aria-expanded="false">
              <iconify-icon icon="solar:login-3-line-duotone"></iconify-icon>
              <span class="hide-menu">AKTUATOR</span>
            </a>
@@ -86,12 +86,12 @@
          <!-- Extra Section -->
          <li class="nav-small-cap">
            <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"></iconify-icon>
-           <span class="hide-menu">EXTRA</span>
+           <span class="hide-menu">USERS</span>
          </li>
          <li class="sidebar-item">
-            <a class="sidebar-link" href="./authentication-register.html" aria-expanded="false">
+            <a class="sidebar-link" href="{{route('users.index')}}" aria-expanded="false">
               <iconify-icon icon="solar:user-plus-rounded-line-duotone"></iconify-icon>
-              <span class="hide-menu">USERS</span>
+              <span class="hide-menu">USER LISTS</span>
             </a>
           </li>
        </ul>

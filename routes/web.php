@@ -1,6 +1,13 @@
 <?php
 
+use App\Http\Controllers\AktuatorController;
+use App\Http\Controllers\HumidityController;
+use App\Http\Controllers\IntensityController;
+use App\Http\Controllers\MoisturesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SensorController;
+use App\Http\Controllers\TemperatureController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.landing.landing');
 });
 
 Route::get('/dashboard', function () {
@@ -27,5 +34,27 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Rute untuk CRUD pengguna (users)
+Route::middleware('auth')->resource('users', UsersController::class);
+
+// Rute untuk CRUD data temperatur (temperatures)
+Route::middleware('auth')->resource('temperatures', TemperatureController::class);
+
+// Rute untuk CRUD data kelembaban (humidities)
+Route::middleware('auth')->resource('humidities', HumidityController::class);
+
+// Rute untuk CRUD data intensitas (intensities)
+Route::middleware('auth')->resource('intensities', IntensityController::class);
+
+// Rute untuk CRUD data kelembaban tanah (moistures)
+Route::middleware('auth')->resource('moistures', MoisturesController::class);
+
+// Rute untuk CRUD data aktuator (actuators)
+Route::middleware('auth')->resource('actuators', AktuatorController::class);
+
+// Rute untuk CRUD data sensor (sensors)
+Route::middleware('auth')->resource('sensors', SensorController::class);
+
 
 require __DIR__.'/auth.php';
