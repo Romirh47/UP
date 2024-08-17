@@ -1,52 +1,44 @@
-<x-guest-layout>
+@extends('layouts.guest')
+
+@section('content')
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <form method="POST" action="{{ route('register') }}">
         @csrf
-
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        <div class="mb-3">
+            <label for="name" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="name" aria-describedby="nameHelp" name="name"
+                value="{{ old('name') }}" placeholder="Masukkan nama lengkap Anda" required autofocus autocomplete="name">
         </div>
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email <span class="text-danger">*</span></label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email"
+                value="{{ old('email') }}" placeholder="Masukkan email Anda" required autofocus autocomplete="username">
         </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="mb-4">
+            <label for="exampleInputPassword1" class="form-label">Kata Sandi <span class="text-danger">*</span></label>
+            <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Masukkan kata sandi Anda (minimal 8 karakter)" required
+                autocomplete="new-password">
+            <small id="passwordHelpBlock" class="form-text text-muted">
+                Contoh: P@ssw0rd123
+            </small>
         </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        <div class="mb-4">
+            <label for="exampleInputPassword2" class="form-label">Konfirmasi Kata Sandi <span class="text-danger">*</span></label>
+            <input type="password" class="form-control" id="exampleInputPassword2" name="password_confirmation" placeholder="Konfirmasi kata sandi Anda" required
+                autocomplete="new-password">
         </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
+        <button type="submit" class="btn btn-primary w-100 py-3 fs-5 mb-4 rounded-2">Daftar</button>
+        <div class="d-flex align-items-center justify-content-center">
+            <p class="fs-5 mb-0 fw-bold">Sudah punya akun?</p>
+            <a class="text-primary fw-bold ms-2" href="{{ route('login') }}">Masuk</a>
         </div>
     </form>
-</x-guest-layout>
+@endsection

@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sensors', function (Blueprint $table) {
+        Schema::create('sensor_data', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['temperatures', 'humidities', 'intensities', 'moistures']);
+            $table->foreignId('sensor_id')->constrained('sensors')->onDelete('cascade');
+            $table->float('value');
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sensors');
+        Schema::dropIfExists('sensor_data');
     }
 };

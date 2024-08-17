@@ -1,13 +1,16 @@
 <?php
 
-use App\Http\Controllers\AktuatorController;
+use App\Http\Controllers\ActuatorController;
 use App\Http\Controllers\HumidityController;
 use App\Http\Controllers\IntensityController;
-use App\Http\Controllers\MoisturesController;
+use App\Http\Controllers\MoistureController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SensorController;
+use App\Http\Controllers\SensorDataController;
 use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\UsersController;
+use App\Models\SensorData;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,9 +28,11 @@ Route::get('/', function () {
     return view('pages.landing.landing');
 });
 
-Route::get('/dashboard', function () {
-    return view('pages.dashboard.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -48,13 +53,18 @@ Route::middleware('auth')->resource('humidities', HumidityController::class);
 Route::middleware('auth')->resource('intensities', IntensityController::class);
 
 // Rute untuk CRUD data kelembaban tanah (moistures)
-Route::middleware('auth')->resource('moistures', MoisturesController::class);
+Route::middleware('auth')->resource('moistures', MoistureController::class);
 
 // Rute untuk CRUD data aktuator (actuators)
-Route::middleware('auth')->resource('actuators', AktuatorController::class);
+Route::middleware('auth')->resource('actuators', ActuatorController::class);
+Route::put('/actuators/{id}/status', [ActuatorController::class, 'updateStatus']);
 
 // Rute untuk CRUD data sensor (sensors)
 Route::middleware('auth')->resource('sensors', SensorController::class);
+
+// Rute untuk CRUD data sensor (sensors)
+Route::middleware('auth')->resource('sensordata', SensorDataController::class);
+
 
 
 require __DIR__.'/auth.php';

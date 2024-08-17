@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('actuators', function (Blueprint $table) {
+        Schema::create('sensors', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('status', ['1', '0'])->default('0');
+            $table->string('type'); // Contoh: suhu, kelembaban, intensitas cahaya
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('actuators');
+        Schema::dropIfExists('sensors');
     }
 };
