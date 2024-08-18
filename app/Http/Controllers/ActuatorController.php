@@ -13,11 +13,6 @@ class ActuatorController extends Controller
         return view('pages.actuators', compact('actuators'));
     }
 
-    public function create()
-    {
-        return view('pages.actuators.create');
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -27,13 +22,7 @@ class ActuatorController extends Controller
 
         Actuator::create($request->all());
 
-        return redirect()->route('actuators.index')->with('success', 'Actuator berhasil ditambahkan.');
-    }
-
-    public function edit($id)
-    {
-        $actuator = Actuator::findOrFail($id);
-        return view('pages.actuators.edit', compact('actuator'));
+        return response()->json(['success' => 'Actuator successfully added!'], 201);
     }
 
     public function update(Request $request, $id)
@@ -46,28 +35,13 @@ class ActuatorController extends Controller
         $actuator = Actuator::findOrFail($id);
         $actuator->update($request->all());
 
-        return redirect()->route('actuators.index')->with('success', 'Actuator berhasil diperbarui.');
+        return response()->json(['success' => 'Actuator successfully updated!'], 200);
     }
 
-    // Metode untuk menghapus actuator
-    public function destroy(Actuator $actuator)
+    public function destroy($id)
     {
+        $actuator = Actuator::findOrFail($id);
         $actuator->delete();
         return response()->json(['success' => 'Actuator deleted successfully'], 200);
     }
-
-    // Metode untuk memperbarui status aktuator dari dashboard
-    public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:0,1',
-        ]);
-
-        $actuator = Actuator::findOrFail($id);
-        $actuator->status = $request->status;
-        $actuator->save();
-
-        return response()->json(['success' => 'Status berhasil diperbarui.']);
-    }
-
 }

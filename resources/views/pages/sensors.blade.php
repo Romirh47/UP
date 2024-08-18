@@ -130,7 +130,7 @@
             e.preventDefault();
             let formData = $(this).serialize();
             $.ajax({
-                url: "{{ route('sensors.store') }}",
+                url: "{{ route('web.sensors.store') }}",
                 type: 'POST',
                 data: formData,
                 success: function(response) {

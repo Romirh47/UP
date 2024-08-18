@@ -38,7 +38,7 @@ class UsersController extends Controller
             'photo' => $photoPath,
         ]);
 
-        return response()->json(['message' => 'User created successfully', 'user' => $user], 200);
+        return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
     }
 
     // Metode untuk menampilkan detail pengguna
@@ -79,10 +79,14 @@ class UsersController extends Controller
     // Metode untuk menghapus pengguna
     public function destroy(User $user)
     {
+        // Periksa apakah foto ada dan hapus jika ada
         if ($user->photo) {
             Storage::disk('public')->delete($user->photo);
         }
+
+        // Hapus pengguna
         $user->delete();
+
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
 }

@@ -12,157 +12,56 @@ use Illuminate\Support\Facades\Route;
 | API Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
+| Di sini Anda dapat mendaftarkan route API untuk aplikasi Anda. Route
+| ini akan dimuat oleh RouteServiceProvider dalam group yang
+| berisi middleware "api".
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-
-// Route::apiResource('users', UsersController::class);
-
-
-// Route::resource('dahboard', DashboardController::class)->names([
-//     'index' => 'dahboard.index',
-//     'create' => 'dahboard.create',
-//     'store' => 'dahboard.store',
-//     'show' => 'dahboard.show',
-//     'edit' => 'dahboard.edit',
-//     'update' => 'dahboard.update',
-//     'destroy' => 'dahboard.destroy'
-// ]);
+// Menghapus middleware auth:sanctum agar API bisa diakses tanpa login
+// Jika Anda tidak memerlukan middleware auth:sanctum, Anda bisa menghapus baris ini atau memodifikasinya sesuai kebutuhan
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 // Route untuk model users
 Route::resource('users', UsersController::class)->names([
-    'index' => 'users.index',
-    'create' => 'users.create',
-    'store' => 'users.store',
-    'show' => 'users.show',
-    'edit' => 'users.edit',
-    'update' => 'users.update',
-    'destroy' => 'users.destroy'
+    'index' => 'api.users.index',
+    'create' => 'api.users.create',
+    'store' => 'api.users.store',
+    'show' => 'api.users.show',
+    'edit' => 'api.users.edit',
+    'update' => 'api.users.update',
+    'destroy' => 'api.users.destroy',
 ]);
 
-// Route untuk model Aktuator
+// Route untuk model actuators
 Route::resource('actuators', ActuatorController::class)->names([
-    'index' => 'actuators.index',
-    'create' => 'actuators.create',
-    'store' => 'actuators.store',
-    'show' => 'actuators.show',
-    'edit' => 'actuators.edit',
-    'update' => 'actuators.update',
-    'destroy' => 'actuators.destroy'
+    'index' => 'api.actuators.index',
+    'create' => 'api.actuators.create',
+    'store' => 'api.actuators.store',
+    'show' => 'api.actuators.show',
+    'edit' => 'api.actuators.edit',
+    'update' => 'api.actuators.update',
+    'destroy' => 'api.actuators.destroy',
 ]);
 
 // Route untuk model sensors
 Route::resource('sensors', SensorController::class)->names([
-    'index' => 'sensors.index',
-    'create' => 'sensors.create',
-    'store' => 'sensors.store',
-    'show' => 'sensors.show',
-    'edit' => 'sensors.edit',
-    'update' => 'sensors.update',
-    'destroy' => 'sensors.destroy'
+    'index' => 'api.sensors.index',
+    'create' => 'api.sensors.create',
+    'store' => 'api.sensors.store',
+    'show' => 'api.sensors.show',
+    'edit' => 'api.sensors.edit',
+    'update' => 'api.sensors.update',
+    'destroy' => 'api.sensors.destroy',
 ]);
 
-// Route untuk model sensors data
-Route::resource('sensorsdata', SensorDataController::class)->names([
-    'index' => 'sensorsdata.index',
-    'create' => 'sensorsdata.create',
-    'store' => 'sensorsdata.store',
-    'show' => 'sensorsdata.show',
-    'edit' => 'sensorsdata.edit',
-    'update' => 'sensorsdata.update',
-    'destroy' => 'sensorsdata.destroy'
+// Route untuk model sensor data
+Route::apiResource('sensordata', SensorDataController::class)->names([
+    'index' => 'api.sensordata.index',
+    'store' => 'api.sensordata.store',
+    'show' => 'api.sensordata.show',
+    'update' => 'api.sensordata.update',
+    'destroy' => 'api.sensordata.destroy',
 ]);
-
-// routes/web.php atau routes/api.php
-Route::get('/publish-sensor-data', [SensorController::class, 'publishSensorData']);
-
-
-
-// // Contoh menggunakan Laravel
-// Route::get('/api/temperatures', function () {
-//     // Ambil data dari tabel sensors
-//     $sensors = DB::table('temperatures')->select('value')->get();
-
-//     // Mengembalikan data dalam format JSON
-//     return response()->json($sensors);
-// });
-
-
-
-// // Contoh menggunakan Laravel
-// Route::get('/api/humidities', function () {
-//     // Ambil data dari tabel sensors
-//     $sensors = DB::table('humidities')->select('value')->get();
-
-//     // Mengembalikan data dalam format JSON
-//     return response()->json($sensors);
-// });
-
-// // Contoh menggunakan Laravel
-// Route::get('/api/moistures', function () {
-//     // Ambil data dari tabel sensors
-//     $sensors = DB::table('moistures')->select('value')->get();
-
-//     // Mengembalikan data dalam format JSON
-//     return response()->json($sensors);
-// });
-
-// // Contoh menggunakan Laravel
-// Route::get('/api/intensities', function () {
-//     // Ambil data dari tabel sensors
-//     $sensors = DB::table('intensities')->select('value')->get();
-
-//     // Mengembalikan data dalam format JSON
-//     return response()->json($sensors);
-// });
-
-// // Route untuk model Temperature
-// Route::resource('temperature', TemperatureController::class)->names([
-//     'index' => 'temperature.index',
-//     'create' => 'temperature.create',
-//     'store' => 'temperature.store',
-//     'show' => 'temperature.show',
-//     'edit' => 'temperature.edit',
-//     'update' => 'temperature.update',
-//     'destroy' => 'temperature.destroy'
-// ]);
-
-// // Route untuk model Humidity
-// Route::resource('humidity', HumidityController::class)->names([
-//     'index' => 'humidity.index',
-//     'create' => 'humidity.create',
-//     'store' => 'humidity.store',
-//     'show' => 'humidity.show',
-//     'edit' => 'humidity.edit',
-//     'update' => 'humidity.update',
-//     'destroy' => 'humidity.destroy'
-// ]);
-
-// // Route untuk model Intensity
-// Route::resource('intensity', IntensityController::class)->names([
-//     'index' => 'intensity.index',
-//     'create' => 'intensity.create',
-//     'store' => 'intensity.store',
-//     'show' => 'intensity.show',
-//     'edit' => 'intensity.edit',
-//     'update' => 'intensity.update',
-//     'destroy' => 'intensity.destroy'
-// ]);
-
-// // Route untuk model Moistures
-// Route::resource('moistures', MoisturesController::class)->names([
-//     'index' => 'moistures.index',
-//     'create' => 'moistures.create',
-//     'store' => 'moistures.store',
-//     'show' => 'moistures.show',
-//     'edit' => 'moistures.edit',
-//     'update' => 'moistures.update',
-//     'destroy' => 'moistures.destroy'
-// ]);

@@ -2,17 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SensorData; // Perbaiki nama model
+use App\Models\Sensor;
+use App\Models\SensorData;
 use Illuminate\Http\Request;
 
-class SensorDataController extends Controller // Perbaiki nama controller
+class SensorDataController extends Controller
 {
-    public function index()
+    // Menampilkan semua data sensor dalam format tampilan web
+    public function indexWeb()
     {
-        $sensorData = SensorData::all(); // Perbaiki nama model
-        return view('pages.data_sensors', compact('sensorData'));
+        $sensorData = SensorData::all(); // Ambil semua data sensor
+        $sensors = Sensor::all(); // Ambil semua sensor
+
+        return view('pages.sensordata', compact('sensorData', 'sensors'));
     }
 
+    // Menampilkan semua data sensor dalam format JSON untuk API
+    public function indexApi()
+    {
+        $sensorData = SensorData::all(); // Ambil semua data sensor
+        return response()->json($sensorData); // Kembalikan data dalam format JSON
+    }
+
+    // Menyimpan data sensor baru melalui API
     public function store(Request $request)
     {
         $request->validate([
@@ -20,28 +32,15 @@ class SensorDataController extends Controller // Perbaiki nama controller
             'value' => 'required',
         ]);
 
-        SensorData::create([ // Perbaiki nama model
+        $sensorData = SensorData::create([
             'sensor_id' => $request->sensor_id,
             'value' => $request->value,
         ]);
 
-        return response()->json(['success' => 'Data sensor berhasil disimpan.']);
+        return response()->json(['success' => 'Data sensor berhasil disimpan.', 'data' => $sensorData], 201);
     }
 
-    public function destroy($id)
-    {
-        $sensorData = SensorData::findOrFail($id); // Perbaiki nama model
-        $sensorData->delete();
-
-        return response()->json(['success' => 'Data sensor berhasil dihapus.']);
-    }
-
-    public function edit($id)
-    {
-        $sensorData = SensorData::findOrFail($id); // Perbaiki nama model
-        return response()->json($sensorData);
-    }
-
+    // Memperbarui data sensor melalui API
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -49,12 +48,21 @@ class SensorDataController extends Controller // Perbaiki nama controller
             'value' => 'required',
         ]);
 
-        $sensorData = SensorData::findOrFail($id); // Perbaiki nama model
+        $sensorData = SensorData::findOrFail($id);
         $sensorData->update([
             'sensor_id' => $request->sensor_id,
             'value' => $request->value,
         ]);
 
-        return response()->json(['success' => 'Data sensor berhasil diperbarui.']);
+        return response()->json(['success' => 'Data sensor berhasil diperbarui.', 'data' => $sensorData]);
+    }
+
+    // Menghapus data sensor melalui API
+    public function destroy($id)
+    {
+        $sensorData = SensorData::findOrFail($id);
+        $sensorData->delete();
+
+        return response()->json(['success' => 'Data sensor berhasil dihapus.']);
     }
 }

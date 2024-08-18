@@ -56,7 +56,7 @@
                                         <span class="hide-menu">Home</span>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('dashboard') }}" aria-expanded="false">
+                                        <a class="sidebar-link" href="{{ route('web.dashboard') }}" aria-expanded="false">
                                             <iconify-icon icon="solar:widget-add-line-duotone"></iconify-icon>
                                             <span class="hide-menu">Dashboard</span>
                                         </a>
@@ -72,28 +72,28 @@
                                         <span class="hide-menu">MANAGEMENT SETTING</span>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('sensors.index') }}"
+                                        <a class="sidebar-link" href="{{ route('web.sensors.index') }}"
                                             aria-expanded="false">
                                             <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
                                             <span class="hide-menu">LIST SENSORS</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('sensordata.index') }}"
+                                        <a class="sidebar-link" href="{{ route('web.sensordata.index') }}"
                                             aria-expanded="false">
                                             <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
                                             <span class="hide-menu">SENSORS DATA</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('actuators.index') }}"
+                                        <a class="sidebar-link" href="{{ route('web.actuators.index') }}"
                                             aria-expanded="false">
                                             <iconify-icon icon="solar:login-3-line-duotone"></iconify-icon>
                                             <span class="hide-menu">AKTUATOR</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('temperatures.index') }}"
+                                        <a class="sidebar-link" href="#"
                                             aria-expanded="false">
                                             <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
                                             <span class="hide-menu">SETTING</span>
@@ -149,7 +149,7 @@
                                         <span class="hide-menu">USERS</span>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('users.index') }}" aria-expanded="false">
+                                        <a class="sidebar-link" href="{{ route('web.users.index') }}" aria-expanded="false">
                                             <iconify-icon icon="solar:user-plus-rounded-line-duotone"></iconify-icon>
                                             <span class="hide-menu">USER LISTS</span>
                                         </a>

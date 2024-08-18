@@ -172,7 +172,7 @@
                 var formData = new FormData(this);
                 $.ajax({
                     type: 'POST',
-                    url: '{{ route('users.store') }}',
+                    url: '{{ route('api.users.store') }}',
                     data: formData,
                     contentType: false,
                     processData: false,
@@ -255,7 +255,8 @@
                         $('#detail_name').text(response.user.name);
                         $('#detail_email').text(response.user.email);
                         if (response.user.photo) {
-                            $('#detail_photo').attr('src', "{{ Storage::url('') }}" + response.user.photo).show();
+                            $('#detail_photo').attr('src', "{{ Storage::url('') }}" + response
+                                .user.photo).show();
                         } else {
                             $('#detail_photo').hide();
                         }
@@ -285,7 +286,11 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             type: 'DELETE',
-                            url: '{{ url('users') }}/' + id,
+                            url: '{{ route('api.users.destroy', ':id') }}'.replace(':id',
+                                id),
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
                             success: function(response) {
                                 Swal.fire(
                                     'Deleted!',
@@ -299,13 +304,15 @@
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
-                                    text: 'Something went wrong!',
+                                    text: xhr.responseJSON.message ||
+                                        'Something went wrong!',
                                 });
                             }
                         });
                     }
                 });
             });
+
         });
     </script>
 @endpush

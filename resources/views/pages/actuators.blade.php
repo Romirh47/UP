@@ -119,11 +119,12 @@
     <script>
         $(document).ready(function() {
             // Tambah actuator
+            // Tambah actuator
             $('#tambahForm').on('submit', function(e) {
                 e.preventDefault();
                 $.ajax({
                     type: 'POST',
-                    url: '{{ route('actuators.store') }}',
+                    url: '{{ route('api.actuators.store') }}', // Periksa rute ini
                     data: $(this).serialize(),
                     success: function(response) {
                         $('#tambahModal').modal('hide');
@@ -159,16 +160,21 @@
             $('#editForm').on('submit', function(e) {
                 e.preventDefault();
                 let id = $('#edit_id').val();
+                let formData = $(this).serialize();
+
                 $.ajax({
-                    type: 'POST',
-                    url: '/actuators/' + id,
-                    data: $(this).serialize(),
+                    type: 'PUT', // Menggunakan metode PUT untuk pembaruan data
+                    url: '{{ route('api.actuators.update', ':id') }}'.replace(':id', id),
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Pastikan token CSRF dikirim
+                    },
                     success: function(response) {
                         $('#editModal').modal('hide');
                         Swal.fire({
                             icon: 'success',
-                            title: 'Success',
-                            text: 'Actuator successfully updated!',
+                            title: 'Berhasil',
+                            text: 'Actuator berhasil diperbarui!',
                         }).then(() => {
                             location.reload(); // Reload halaman setelah berhasil
                         });
@@ -177,52 +183,61 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Something went wrong!',
+                            text: xhr.responseJSON.message || 'Terjadi kesalahan!',
                         });
                     }
                 });
             });
 
+
+
+
+
             // Delete actuator
             $('.delete-btn').on('click', function() {
                 let id = $(this).data('id');
+
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    title: 'Apakah Anda yakin?',
+                    text: "Anda tidak dapat mengembalikan tindakan ini!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: 'Ya, hapus!'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
+                            url: '{{ route('api.actuators.destroy', ':id') }}'.replace(
+                                ':id', id),
                             type: 'DELETE',
-                            url: '/actuators/' + id,
-                            data: {
-                                _token: '{{ csrf_token() }}'
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             success: function(response) {
                                 Swal.fire(
-                                    'Deleted!',
-                                    response.success,
+                                    'Terhapus!',
+                                    response.message ||
+                                    'Data actuator berhasil dihapus.',
                                     'success'
                                 ).then(() => {
                                     location
-                                .reload(); // Reload halaman setelah berhasil
+                                        .reload(); // Reload halaman setelah berhasil
                                 });
                             },
                             error: function(xhr) {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
-                                    text: 'Something went wrong!',
+                                    text: xhr.responseJSON.message ||
+                                        'Terjadi kesalahan!',
                                 });
                             }
                         });
                     }
                 });
             });
+
         });
     </script>
 @endpush
