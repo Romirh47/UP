@@ -20,7 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'photo',  // Menambahkan atribut 'photo'
+        'photo', // Tambahkan photo ke sini
     ];
 
     /**

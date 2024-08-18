@@ -184,10 +184,12 @@
                             <a href="https://adminmart.com/product/matdash-free-bootstrap-5-admin-dashboard-template/"
                                 target="_blank" class="btn btn-primary">hello {{ Auth::user()->name }}</a>
                             <li class="nav-item dropdown">
-                                <a class="nav-link " href="javascript:void(0)" id="drop2"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="../assets/images/profile/user-1.jpg" alt="" width="35"
-                                        height="35" class="rounded-circle">
+                                <a class="nav-link" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @if(Auth::user()->photo)
+                                        <img src="{{ Storage::url(Auth::user()->photo) }}" alt="" width="35" height="35" class="rounded-circle">
+                                    @else
+                                        <img src="../assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
+                                    @endif
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
                                     aria-labelledby="drop2">

@@ -34,11 +34,17 @@ class UsersController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
             'photo' => $photoPath,
         ]);
 
         return response()->json(['message' => 'User created successfully', 'user' => $user], 200);
+    }
+
+    // Metode untuk menampilkan detail pengguna
+    public function show(User $user)
+    {
+        return response()->json(['user' => $user], 200);
     }
 
     // Metode untuk mengedit pengguna
@@ -51,20 +57,21 @@ class UsersController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $photoPath = $user->photo;
         if ($request->hasFile('photo')) {
-            if ($photoPath) {
-                Storage::disk('public')->delete($photoPath);
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
             }
-            $photoPath = $request->file('photo')->store('photos', 'public');
+            $user->photo = $request->file('photo')->store('photos', 'public');
         }
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password ? bcrypt($request->password) : $user->password,
-            'photo' => $photoPath,
-        ]);
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
 
         return response()->json(['message' => 'User updated successfully', 'user' => $user], 200);
     }

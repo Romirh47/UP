@@ -2,29 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sensor;
-use App\Models\SensorData;
+use App\Models\SensorData; // Perbaiki nama model
 use Illuminate\Http\Request;
 
-class SensorDataController extends Controller
+class SensorDataController extends Controller // Perbaiki nama controller
 {
     public function index()
     {
-        $sensorData = SensorData::with('sensor')->get();
-        $sensors = Sensor::all(); // Ambil semua sensor
-
-        return view('pages.sensordata', compact('sensorData', 'sensors'));
+        $sensorData = SensorData::all(); // Perbaiki nama model
+        return view('pages.data_sensors', compact('sensorData'));
     }
-
 
     public function store(Request $request)
     {
         $request->validate([
             'sensor_id' => 'required|exists:sensors,id',
-            'value' => 'required|numeric',
+            'value' => 'required',
         ]);
 
-        SensorData::create([
+        SensorData::create([ // Perbaiki nama model
             'sensor_id' => $request->sensor_id,
             'value' => $request->value,
         ]);
@@ -34,7 +30,7 @@ class SensorDataController extends Controller
 
     public function destroy($id)
     {
-        $sensorData = SensorData::findOrFail($id);
+        $sensorData = SensorData::findOrFail($id); // Perbaiki nama model
         $sensorData->delete();
 
         return response()->json(['success' => 'Data sensor berhasil dihapus.']);
@@ -42,7 +38,7 @@ class SensorDataController extends Controller
 
     public function edit($id)
     {
-        $sensorData = SensorData::findOrFail($id);
+        $sensorData = SensorData::findOrFail($id); // Perbaiki nama model
         return response()->json($sensorData);
     }
 
@@ -50,10 +46,10 @@ class SensorDataController extends Controller
     {
         $request->validate([
             'sensor_id' => 'required|exists:sensors,id',
-            'value' => 'required|numeric',
+            'value' => 'required',
         ]);
 
-        $sensorData = SensorData::findOrFail($id);
+        $sensorData = SensorData::findOrFail($id); // Perbaiki nama model
         $sensorData->update([
             'sensor_id' => $request->sensor_id,
             'value' => $request->value,

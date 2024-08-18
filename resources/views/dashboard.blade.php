@@ -12,7 +12,12 @@
                     <div class="card-body text-center">
                         <h6 class="mb-3 fs-4 text-uppercase text-white font-weight-bold">{{ $sensor->name }}</h6>
                         <h4 class="mb-0 fw-bold text-white" style="font-size: 2rem;">
-                            {{ isset($sensorData[$sensor->id]) ? $sensorData[$sensor->id]->last()->value : 'No data' }}
+                            @php
+                                // Menangani kasus di mana $sensorData[$sensor->id] mungkin tidak ada atau null
+                                $latestData = isset($sensorData[$sensor->id]) ? $sensorData[$sensor->id]->last() : null;
+                                $value = $latestData ? $latestData->value : 'No data';
+                            @endphp
+                            {{ $value }}
                         </h4>
                         <p class="mb-0 text-white" style="margin-top: 10px; font-size: 1.2rem; font-weight: bold;">
                             {{ $sensor->type }}

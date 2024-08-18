@@ -1,13 +1,8 @@
 <?php
 
 use App\Http\Controllers\ActuatorController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HumidityController;
-use App\Http\Controllers\IntensityController;
-use App\Http\Controllers\MoisturesController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\SensorDataController;
-use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -52,51 +47,6 @@ Route::resource('users', UsersController::class)->names([
     'destroy' => 'users.destroy'
 ]);
 
-
-// Route untuk model Temperature
-Route::resource('temperature', TemperatureController::class)->names([
-    'index' => 'temperature.index',
-    'create' => 'temperature.create',
-    'store' => 'temperature.store',
-    'show' => 'temperature.show',
-    'edit' => 'temperature.edit',
-    'update' => 'temperature.update',
-    'destroy' => 'temperature.destroy'
-]);
-
-// Route untuk model Humidity
-Route::resource('humidity', HumidityController::class)->names([
-    'index' => 'humidity.index',
-    'create' => 'humidity.create',
-    'store' => 'humidity.store',
-    'show' => 'humidity.show',
-    'edit' => 'humidity.edit',
-    'update' => 'humidity.update',
-    'destroy' => 'humidity.destroy'
-]);
-
-// Route untuk model Intensity
-Route::resource('intensity', IntensityController::class)->names([
-    'index' => 'intensity.index',
-    'create' => 'intensity.create',
-    'store' => 'intensity.store',
-    'show' => 'intensity.show',
-    'edit' => 'intensity.edit',
-    'update' => 'intensity.update',
-    'destroy' => 'intensity.destroy'
-]);
-
-// Route untuk model Moistures
-Route::resource('moistures', MoisturesController::class)->names([
-    'index' => 'moistures.index',
-    'create' => 'moistures.create',
-    'store' => 'moistures.store',
-    'show' => 'moistures.show',
-    'edit' => 'moistures.edit',
-    'update' => 'moistures.update',
-    'destroy' => 'moistures.destroy'
-]);
-
 // Route untuk model Aktuator
 Route::resource('actuators', ActuatorController::class)->names([
     'index' => 'actuators.index',
@@ -119,7 +69,7 @@ Route::resource('sensors', SensorController::class)->names([
     'destroy' => 'sensors.destroy'
 ]);
 
-// Route untuk model sensors
+// Route untuk model sensors data
 Route::resource('sensorsdata', SensorDataController::class)->names([
     'index' => 'sensorsdata.index',
     'create' => 'sensorsdata.create',
@@ -129,6 +79,11 @@ Route::resource('sensorsdata', SensorDataController::class)->names([
     'update' => 'sensorsdata.update',
     'destroy' => 'sensorsdata.destroy'
 ]);
+
+// routes/web.php atau routes/api.php
+Route::get('/publish-sensor-data', [SensorController::class, 'publishSensorData']);
+
+
 
 // // Contoh menggunakan Laravel
 // Route::get('/api/temperatures', function () {
@@ -168,3 +123,46 @@ Route::resource('sensorsdata', SensorDataController::class)->names([
 //     return response()->json($sensors);
 // });
 
+// // Route untuk model Temperature
+// Route::resource('temperature', TemperatureController::class)->names([
+//     'index' => 'temperature.index',
+//     'create' => 'temperature.create',
+//     'store' => 'temperature.store',
+//     'show' => 'temperature.show',
+//     'edit' => 'temperature.edit',
+//     'update' => 'temperature.update',
+//     'destroy' => 'temperature.destroy'
+// ]);
+
+// // Route untuk model Humidity
+// Route::resource('humidity', HumidityController::class)->names([
+//     'index' => 'humidity.index',
+//     'create' => 'humidity.create',
+//     'store' => 'humidity.store',
+//     'show' => 'humidity.show',
+//     'edit' => 'humidity.edit',
+//     'update' => 'humidity.update',
+//     'destroy' => 'humidity.destroy'
+// ]);
+
+// // Route untuk model Intensity
+// Route::resource('intensity', IntensityController::class)->names([
+//     'index' => 'intensity.index',
+//     'create' => 'intensity.create',
+//     'store' => 'intensity.store',
+//     'show' => 'intensity.show',
+//     'edit' => 'intensity.edit',
+//     'update' => 'intensity.update',
+//     'destroy' => 'intensity.destroy'
+// ]);
+
+// // Route untuk model Moistures
+// Route::resource('moistures', MoisturesController::class)->names([
+//     'index' => 'moistures.index',
+//     'create' => 'moistures.create',
+//     'store' => 'moistures.store',
+//     'show' => 'moistures.show',
+//     'edit' => 'moistures.edit',
+//     'update' => 'moistures.update',
+//     'destroy' => 'moistures.destroy'
+// ]);

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sensor;
+use App\Models\SensorData; // Tambahkan model SensorData
 use Illuminate\Http\Request;
+use PhpMqtt\Client\Facades\MQTT;
 
 class SensorController extends Controller
 {
@@ -60,5 +62,36 @@ class SensorController extends Controller
         ]);
 
         return response()->json(['success' => 'Sensor berhasil diperbarui.']);
+    }
+
+    public function publishSensorData()
+    {
+        set_time_limit(120); // Meningkatkan waktu eksekusi maksimum menjadi 120 detik
+
+        // Ambil semua sensor dari database
+        $sensors = Sensor::all();
+        $mqtt = MQTT::connection();
+
+        foreach ($sensors as $sensor) {
+            // Ambil nilai sensor terbaru dari SensorData
+            $sensorData = SensorData::where('sensor_id', $sensor->id)->latest()->first();
+
+            if ($sensorData) {
+                // Buat topik berdasarkan nama sensor
+                $topic = 'sensors/' . $sensor->name;
+
+                // Buat pesan berdasarkan data sensor
+                $message = 'Value of ' . $sensor->name . ': ' . $sensorData->value;
+
+                // Publish pesan ke broker MQTT
+                $mqtt->publish($topic, $message, 1); // QoS level 1
+                $mqtt->publish($topic, $message, 2, true); // QoS level 2 dengan retain flag
+            }
+        }
+
+        // Jalankan event loop untuk memastikan pesan diterima
+        $mqtt->loop(true);
+
+        return response()->json(['message' => 'Messages published successfully'], 200);
     }
 }

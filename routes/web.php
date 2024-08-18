@@ -10,7 +10,6 @@ use App\Http\Controllers\SensorController;
 use App\Http\Controllers\SensorDataController;
 use App\Http\Controllers\TemperatureController;
 use App\Http\Controllers\UsersController;
-use App\Models\SensorData;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -65,6 +64,9 @@ Route::middleware('auth')->resource('sensors', SensorController::class);
 // Rute untuk CRUD data sensor (sensors)
 Route::middleware('auth')->resource('sensordata', SensorDataController::class);
 
+
+//route mqtt
+Route::get('/publish-sensor-data', [SensorController::class, 'publishSensorData']);
 
 
 require __DIR__.'/auth.php';
