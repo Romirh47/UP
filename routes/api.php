@@ -25,34 +25,38 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // Route untuk model users
-Route::resource('users', UsersController::class)->names([
+Route::apiResource('users', UsersController::class)->names([
     'index' => 'api.users.index',
-    'create' => 'api.users.create',
     'store' => 'api.users.store',
     'show' => 'api.users.show',
-    'edit' => 'api.users.edit',
     'update' => 'api.users.update',
     'destroy' => 'api.users.destroy',
 ]);
 
+// // Route untuk model actuators
+// Route::apiResource('actuators', ActuatorController::class)->names([
+//     'index' => 'api.actuators.index',
+//     'store' => 'api.actuators.store',
+//     'show' => 'api.actuators.show',
+//     'update' => 'api.actuators.update',
+//     'destroy' => 'api.actuators.destroy',
+// ]);
+
 // Route untuk model actuators
-Route::resource('actuators', ActuatorController::class)->names([
-    'index' => 'api.actuators.index',
-    'create' => 'api.actuators.create',
-    'store' => 'api.actuators.store',
-    'show' => 'api.actuators.show',
-    'edit' => 'api.actuators.edit',
-    'update' => 'api.actuators.update',
-    'destroy' => 'api.actuators.destroy',
-]);
+Route::prefix('actuators')->group(function () {
+    Route::get('/', [ActuatorController::class, 'apiIndex'])->name('api.actuators.index');
+    Route::post('/', [ActuatorController::class, 'apiStore'])->name('api.actuators.store');
+    Route::get('/{id}', [ActuatorController::class, 'apiShow'])->name('api.actuators.show');
+    Route::put('/{id}', [ActuatorController::class, 'apiUpdate'])->name('api.actuators.update');
+    Route::delete('/{id}', [ActuatorController::class, 'apiDestroy'])->name('api.actuators.destroy');
+});
+
 
 // Route untuk model sensors
-Route::resource('sensors', SensorController::class)->names([
+Route::apiResource('sensors', SensorController::class)->names([
     'index' => 'api.sensors.index',
-    'create' => 'api.sensors.create',
     'store' => 'api.sensors.store',
     'show' => 'api.sensors.show',
-    'edit' => 'api.sensors.edit',
     'update' => 'api.sensors.update',
     'destroy' => 'api.sensors.destroy',
 ]);

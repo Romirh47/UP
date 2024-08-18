@@ -45,7 +45,7 @@ Route::middleware('auth')->resource('users', UsersController::class)->names([
 ]);
 
 // Rute untuk CRUD data aktuator (actuators)
-Route::middleware('auth')->resource('actuators', ActuatorController::class)->names([
+Route::resource('actuators', ActuatorController::class)->names([
     'index' => 'web.actuators.index',
     'create' => 'web.actuators.create',
     'store' => 'web.actuators.store',
@@ -55,7 +55,7 @@ Route::middleware('auth')->resource('actuators', ActuatorController::class)->nam
     'destroy' => 'web.actuators.destroy',
 ]);
 
-Route::put('/actuators/{id}/status', [ActuatorController::class, 'updateStatus'])->name('web.actuators.updateStatus');
+// Route::put('/actuators/{id}/status', [ActuatorController::class, 'updateStatus'])->name('web.actuators.updateStatus');
 
 // Rute untuk CRUD data sensor (sensors)
 Route::middleware('auth')->resource('sensors', SensorController::class)->names([

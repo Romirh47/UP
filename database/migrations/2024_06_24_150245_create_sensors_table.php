@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sensors', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique(); // Menambahkan constraint unik pada kolom 'name'
             $table->string('type'); // Contoh: suhu, kelembaban, intensitas cahaya
             $table->text('description')->nullable();
             $table->timestamps();

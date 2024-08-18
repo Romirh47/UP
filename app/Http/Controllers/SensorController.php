@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sensor;
-use App\Models\SensorData; // Tambahkan model SensorData
+use App\Models\SensorData;
 use Illuminate\Http\Request;
 use PhpMqtt\Client\Facades\MQTT;
 
@@ -17,19 +17,25 @@ class SensorController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi input untuk memastikan 'name' unik
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:sensors,name', // Validasi unik untuk 'name'
             'type' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
+        // Buat sensor baru
         Sensor::create([
             'name' => $request->name,
             'type' => $request->type,
             'description' => $request->description,
         ]);
 
-        return response()->json(['success' => 'Sensor berhasil disimpan.']);
+        // Kembalikan response untuk SweetAlert
+        return response()->json([
+            'success' => true,
+            'message' => 'Sensor berhasil disimpan.',
+        ]);
     }
 
     public function destroy($id)
@@ -37,7 +43,11 @@ class SensorController extends Controller
         $sensor = Sensor::findOrFail($id);
         $sensor->delete();
 
-        return response()->json(['success' => 'Sensor berhasil dihapus.']);
+        // Kembalikan response untuk SweetAlert
+        return response()->json([
+            'success' => true,
+            'message' => 'Sensor berhasil dihapus.',
+        ]);
     }
 
     public function edit($id)
@@ -48,12 +58,14 @@ class SensorController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validasi input untuk memastikan 'name' unik, kecuali untuk sensor saat ini
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:sensors,name,' . $id, // Validasi unik untuk 'name', kecuali untuk ID saat ini
             'type' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
+        // Temukan sensor dan perbarui informasinya
         $sensor = Sensor::findOrFail($id);
         $sensor->update([
             'name' => $request->name,
@@ -61,7 +73,11 @@ class SensorController extends Controller
             'description' => $request->description,
         ]);
 
-        return response()->json(['success' => 'Sensor berhasil diperbarui.']);
+        // Kembalikan response untuk SweetAlert
+        return response()->json([
+            'success' => true,
+            'message' => 'Sensor berhasil diperbarui.',
+        ]);
     }
 
     public function publishSensorData()
@@ -92,6 +108,10 @@ class SensorController extends Controller
         // Jalankan event loop untuk memastikan pesan diterima
         $mqtt->loop(true);
 
-        return response()->json(['message' => 'Messages published successfully'], 200);
+        // Kembalikan response untuk SweetAlert
+        return response()->json([
+            'success' => true,
+            'message' => 'Messages published successfully',
+        ]);
     }
 }

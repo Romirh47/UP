@@ -7,41 +7,91 @@ use Illuminate\Http\Request;
 
 class ActuatorController extends Controller
 {
+    // Menampilkan semua aktuator dalam format tampilan web
     public function index()
     {
         $actuators = Actuator::all();
         return view('pages.actuators', compact('actuators'));
     }
 
-    public function store(Request $request)
+    // Menampilkan semua aktuator dalam format JSON untuk API
+    public function apiIndex()
+    {
+        $actuators = Actuator::all();
+        return response()->json($actuators);
+    }
+
+    // Menyimpan aktuator baru melalui API
+    public function apiStore(Request $request)
     {
         $request->validate([
             'name' => 'required|string',
             'status' => 'required|in:1,0',
         ]);
 
-        Actuator::create($request->all());
+        $actuator = Actuator::create($request->all());
 
-        return response()->json(['success' => 'Actuator successfully added!'], 201);
+        return response()->json([
+            'success' => 'Actuator successfully added!',
+            'data' => $actuator
+        ], 201);
     }
 
-    public function update(Request $request, $id)
+    // Menampilkan aktuator berdasarkan ID dalam format tampilan web
+    public function show($id)
+    {
+        $actuator = Actuator::find($id);
+
+        if ($actuator) {
+            return view('pages.actuator', compact('actuator'));
+        }
+
+        return response()->json(['error' => 'Actuator not found'], 404);
+    }
+
+    // Menampilkan aktuator berdasarkan ID dalam format JSON untuk API
+    public function apiShow($id)
+    {
+        $actuator = Actuator::find($id);
+
+        if ($actuator) {
+            return response()->json($actuator);
+        }
+
+        return response()->json(['error' => 'Actuator not found'], 404);
+    }
+
+    // Memperbarui aktuator melalui API
+    public function apiUpdate(Request $request, $id)
     {
         $request->validate([
             'name' => 'required|string',
             'status' => 'required|in:1,0',
         ]);
 
-        $actuator = Actuator::findOrFail($id);
-        $actuator->update($request->all());
+        $actuator = Actuator::find($id);
 
-        return response()->json(['success' => 'Actuator successfully updated!'], 200);
+        if ($actuator) {
+            $actuator->update($request->all());
+            return response()->json([
+                'success' => 'Actuator successfully updated!',
+                'data' => $actuator
+            ], 200);
+        }
+
+        return response()->json(['error' => 'Actuator not found'], 404);
     }
 
-    public function destroy($id)
+    // Menghapus aktuator melalui API
+    public function apiDestroy($id)
     {
-        $actuator = Actuator::findOrFail($id);
-        $actuator->delete();
-        return response()->json(['success' => 'Actuator deleted successfully'], 200);
+        $actuator = Actuator::find($id);
+
+        if ($actuator) {
+            $actuator->delete();
+            return response()->json(['success' => 'Actuator deleted successfully'], 200);
+        }
+
+        return response()->json(['error' => 'Actuator not found'], 404);
     }
 }
