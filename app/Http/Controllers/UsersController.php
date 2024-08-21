@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
 {
-    // Metode untuk menampilkan daftar pengguna
+    // Metode untuk menampilkan daftar pengguna dengan pagination
     public function index()
     {
-        $users = User::all();
+        // Menentukan jumlah item per halaman
+        $users = User::paginate(5); // Mengambil 5 pengguna per halaman
         return view('pages.users.users', compact('users'));
     }
 
@@ -42,14 +43,26 @@ class UsersController extends Controller
     }
 
     // Metode untuk menampilkan detail pengguna
-    public function show(User $user)
+    public function show($id)
     {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
         return response()->json(['user' => $user], 200);
     }
 
     // Metode untuk mengedit pengguna
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -77,8 +90,14 @@ class UsersController extends Controller
     }
 
     // Metode untuk menghapus pengguna
-    public function destroy(User $user)
+    public function destroy($id)
     {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
         // Periksa apakah foto ada dan hapus jika ada
         if ($user->photo) {
             Storage::disk('public')->delete($user->photo);
@@ -89,4 +108,7 @@ class UsersController extends Controller
 
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
+
 }
+
+

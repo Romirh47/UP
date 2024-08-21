@@ -10,29 +10,31 @@ class ActuatorController extends Controller
     // Menampilkan semua aktuator dalam format tampilan web
     public function index()
     {
-        $actuators = Actuator::all();
+        $actuators = Actuator::orderBy('created_at', 'desc')->paginate(5); // Mengurutkan data terbaru di atas
         return view('pages.actuators', compact('actuators'));
     }
 
     // Menampilkan semua aktuator dalam format JSON untuk API
-    public function apiIndex()
+    public function apiIndex(Request $request)
     {
-        $actuators = Actuator::all();
-        return response()->json($actuators);
+        $page = $request->get('page', 1); // Mendapatkan halaman dari query parameter
+        $perPage = 5; // Jumlah item per halaman
+        $actuators = Actuator::orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page); // Mengurutkan dan paginasi data aktuator
+        return response()->json($actuators); // Mengembalikan data dengan format JSON
     }
 
     // Menyimpan aktuator baru melalui API
     public function apiStore(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'status' => 'required|in:1,0',
+            'name' => 'required|string|max:255|unique:actuators',
+            'description' => 'nullable|string',
         ]);
 
-        $actuator = Actuator::create($request->all());
+        $actuator = Actuator::create($request->only(['name', 'description']));
 
         return response()->json([
-            'success' => 'Actuator successfully added!',
+            'message' => 'Actuator berhasil ditambahkan!',
             'data' => $actuator
         ], 201);
     }
@@ -46,7 +48,7 @@ class ActuatorController extends Controller
             return view('pages.actuator', compact('actuator'));
         }
 
-        return response()->json(['error' => 'Actuator not found'], 404);
+        return response()->json(['error' => 'Actuator tidak ditemukan'], 404);
     }
 
     // Menampilkan aktuator berdasarkan ID dalam format JSON untuk API
@@ -58,28 +60,28 @@ class ActuatorController extends Controller
             return response()->json($actuator);
         }
 
-        return response()->json(['error' => 'Actuator not found'], 404);
+        return response()->json(['error' => 'Actuator tidak ditemukan'], 404);
     }
 
     // Memperbarui aktuator melalui API
     public function apiUpdate(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string',
-            'status' => 'required|in:1,0',
+            'name' => 'required|string|max:255|unique:actuators,name,' . $id,
+            'description' => 'nullable|string',
         ]);
 
         $actuator = Actuator::find($id);
 
         if ($actuator) {
-            $actuator->update($request->all());
+            $actuator->update($request->only(['name', 'description']));
             return response()->json([
-                'success' => 'Actuator successfully updated!',
+                'message' => 'Actuator berhasil diperbarui!',
                 'data' => $actuator
             ], 200);
         }
 
-        return response()->json(['error' => 'Actuator not found'], 404);
+        return response()->json(['error' => 'Actuator tidak ditemukan'], 404);
     }
 
     // Menghapus aktuator melalui API
@@ -89,9 +91,16 @@ class ActuatorController extends Controller
 
         if ($actuator) {
             $actuator->delete();
-            return response()->json(['success' => 'Actuator deleted successfully'], 200);
+            return response()->json(['message' => 'Actuator berhasil dihapus'], 200);
         }
 
-        return response()->json(['error' => 'Actuator not found'], 404);
+        return response()->json(['error' => 'Actuator tidak ditemukan'], 404);
+    }
+
+    // Menampilkan nama-nama aktuator dalam format JSON untuk dropdown
+    public function apiList()
+    {
+        $actuators = Actuator::all();
+        return response()->json($actuators);
     }
 }

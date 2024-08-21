@@ -9,11 +9,13 @@ use PhpMqtt\Client\Facades\MQTT;
 
 class SensorDataController extends Controller
 {
-    // Menampilkan semua data sensor dalam format tampilan web
+    // Menampilkan semua data sensor dalam format tampilan web (untuk keperluan tampilan web)
     public function indexWeb()
     {
-        $sensorData = SensorData::orderBy('created_at', 'desc')->get(); // Urutkan berdasarkan created_at dari yang terbaru
-        $sensors = Sensor::all(); // Ambil semua sensor
+        $sensorData = SensorData::with('sensor')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10); // Menambahkan pagination
+        $sensors = Sensor::all();
 
         return view('pages.sensordata', compact('sensorData', 'sensors'));
     }
@@ -21,8 +23,10 @@ class SensorDataController extends Controller
     // Menampilkan semua data sensor dalam format JSON untuk API
     public function index()
     {
-        $sensorData = SensorData::all(); // Ambil semua data sensor
-        return response()->json($sensorData); // Kembalikan data dalam format JSON
+        $sensorData = SensorData::with('sensor')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10); // Menambahkan pagination
+        return response()->json($sensorData); // Kembalikan data dengan format pagination
     }
 
     // Menyimpan data sensor baru melalui API dan publish ke MQTT
@@ -53,7 +57,7 @@ class SensorDataController extends Controller
 
         MQTT::connection()->publish("sensors/{$sensorName}", json_encode($data));
 
-        return response()->json(['success' => 'Data sensor berhasil disimpan dan dikirim ke MQTT.', 'data' => $sensorData], 201);
+        return response()->json(['success' => 'Data sensor berhasil disimpan.', 'data' => $sensorData], 201);
     }
 
     // Menampilkan data sensor tertentu dalam format JSON
@@ -91,7 +95,7 @@ class SensorDataController extends Controller
 
         MQTT::connection()->publish("sensors/{$sensorName}", json_encode($data));
 
-        return response()->json(['success' => 'Data sensor berhasil diperbarui dan dikirim ke MQTT.', 'data' => $sensorData]);
+        return response()->json(['success' => 'Data sensor berhasil diperbarui.', 'data' => $sensorData]);
     }
 
     // Menghapus data sensor melalui API

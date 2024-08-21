@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\ActuatorController;
+use App\Http\Controllers\ActuatorValueController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\SensorDataController;
 use App\Http\Controllers\UsersController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,12 +18,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Menghapus middleware auth:sanctum agar API bisa diakses tanpa login
-// Jika Anda tidak memerlukan middleware auth:sanctum, Anda bisa menghapus baris ini atau memodifikasinya sesuai kebutuhan
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 // Route untuk model users
 Route::apiResource('users', UsersController::class)->names([
     'index' => 'api.users.index',
@@ -32,15 +26,6 @@ Route::apiResource('users', UsersController::class)->names([
     'update' => 'api.users.update',
     'destroy' => 'api.users.destroy',
 ]);
-
-// // Route untuk model actuators
-// Route::apiResource('actuators', ActuatorController::class)->names([
-//     'index' => 'api.actuators.index',
-//     'store' => 'api.actuators.store',
-//     'show' => 'api.actuators.show',
-//     'update' => 'api.actuators.update',
-//     'destroy' => 'api.actuators.destroy',
-// ]);
 
 // Route untuk model actuators
 Route::prefix('actuators')->group(function () {
@@ -51,8 +36,16 @@ Route::prefix('actuators')->group(function () {
     Route::delete('/{id}', [ActuatorController::class, 'apiDestroy'])->name('api.actuators.destroy');
 });
 
+// Routes untuk model actuator-values
+Route::prefix('actuator-values')->group(function () {
+    Route::get('/', [ActuatorValueController::class, 'apiIndex'])->name('api.actuator_values.index');
+    Route::post('/', [ActuatorValueController::class, 'store'])->name('api.actuator_values.store');
+    Route::get('/{id}', [ActuatorValueController::class, 'show'])->name('api.actuator_values.show');
+    Route::put('/{id}', [ActuatorValueController::class, 'update'])->name('api.actuator_values.update');
+    Route::delete('/{id}', [ActuatorValueController::class, 'destroy'])->name('api.actuator_values.destroy');
+});
 
-// Route untuk model sensors
+// Rute untuk API
 Route::apiResource('sensors', SensorController::class)->names([
     'index' => 'api.sensors.index',
     'store' => 'api.sensors.store',
@@ -69,3 +62,6 @@ Route::apiResource('sensordata', SensorDataController::class)->names([
     'update' => 'api.sensordata.update',
     'destroy' => 'api.sensordata.destroy',
 ]);
+
+// Route untuk model dashboard
+Route::get('/dashboard/data', [DashboardController::class, 'getData'])->name('dashboard.data');

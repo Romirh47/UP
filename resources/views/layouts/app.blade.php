@@ -93,10 +93,10 @@
                                         </a>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="#"
+                                        <a class="sidebar-link" href="{{ route('web.actuator_values.index') }}"
                                             aria-expanded="false">
                                             <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
-                                            <span class="hide-menu">SETTING</span>
+                                            <span class="hide-menu">ACTUATOR DATA</span>
                                         </a>
                                     </li>
                                     {{-- <li class="sidebar-item">

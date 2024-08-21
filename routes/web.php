@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActuatorController;
+use App\Http\Controllers\ActuatorValueController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SensorController;
@@ -23,10 +24,19 @@ Route::get('/', function () {
     return view('pages.landing.landing');
 })->name('web.landing');
 
+// Rute untuk memuat data dashboard secara asinkron
+Route::middleware('auth')->get('/dashboard/data', [DashboardController::class, 'getData'])->name('dashboard.data');
+
+// Rute untuk halaman dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('web.dashboard');
 
+// Rute untuk memperbarui status aktuator
+Route::middleware('auth')->put('/actuators/{id}/status', [DashboardController::class, 'updateActuatorStatus'])
+    ->name('actuators.updateStatus');
+
+// Rute lainnya tetap sama
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('web.profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('web.profile.update');
@@ -45,7 +55,7 @@ Route::middleware('auth')->resource('users', UsersController::class)->names([
 ]);
 
 // Rute untuk CRUD data aktuator (actuators)
-Route::resource('actuators', ActuatorController::class)->names([
+Route::middleware('auth')->resource('actuators', ActuatorController::class)->names([
     'index' => 'web.actuators.index',
     'create' => 'web.actuators.create',
     'store' => 'web.actuators.store',
@@ -55,7 +65,16 @@ Route::resource('actuators', ActuatorController::class)->names([
     'destroy' => 'web.actuators.destroy',
 ]);
 
-// Route::put('/actuators/{id}/status', [ActuatorController::class, 'updateStatus'])->name('web.actuators.updateStatus');
+// Rute untuk CRUD data nilai aktuator (actuator_values)
+Route::middleware('auth')->resource('actuator-values', ActuatorValueController::class)->names([
+    'index' => 'web.actuator_values.index',
+    'create' => 'web.actuator_values.create',
+    'store' => 'web.actuator_values.store',
+    'show' => 'web.actuator_values.show',
+    'edit' => 'web.actuator_values.edit',
+    'update' => 'web.actuator_values.update',
+    'destroy' => 'web.actuator_values.destroy',
+]);
 
 // Rute untuk CRUD data sensor (sensors)
 Route::middleware('auth')->resource('sensors', SensorController::class)->names([

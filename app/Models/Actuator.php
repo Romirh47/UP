@@ -9,21 +9,14 @@ class Actuator extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'name', 'status',
+        'name',
+        'description'
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'status' => 'string', // Jika menggunakan ENUM di database, gunakan 'string' sebagai cast
-    ];
+    // Relasi jika diperlukan
+    public function actuatorValues()
+    {
+        return $this->hasMany(ActuatorValue::class);
+    }
 }

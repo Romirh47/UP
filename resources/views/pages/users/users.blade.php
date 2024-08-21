@@ -25,7 +25,7 @@
                             <tbody>
                                 @foreach ($users as $user)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
                                         <td>
                                             @if ($user->photo)
                                                 <img src="{{ Storage::url($user->photo) }}" alt="User Photo"
@@ -56,6 +56,35 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Pagination Links -->
+                    <div class="d-flex justify-content-start mt-3">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm">
+                                <!-- Display previous button -->
+                                <li class="page-item {{ $users->onFirstPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $users->previousPageUrl() }}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo; Previous</span>
+                                    </a>
+                                </li>
+
+                                <!-- Display page numbers -->
+                                @for ($i = 1; $i <= $users->lastPage(); $i++)
+                                    <li class="page-item {{ $users->currentPage() == $i ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ $users->url($i) }}">{{ $i }}</a>
+                                    </li>
+                                @endfor
+
+                                <!-- Display next button -->
+                                <li class="page-item {{ !$users->hasMorePages() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
+                                        <span aria-hidden="true">Next &raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -312,7 +341,6 @@
                     }
                 });
             });
-
         });
     </script>
 @endpush
