@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActuatorController;
 use App\Http\Controllers\ActuatorValueController;
+use App\Http\Controllers\ControlController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SensorController;
@@ -87,10 +88,18 @@ Route::middleware('auth')->resource('sensors', SensorController::class)->names([
     'destroy' => 'web.sensors.destroy',
 ]);
 
+    // Rute untuk CRUD controls
+    Route::resource('controls', ControlController::class)->names([
+        'index' => 'web.controls.index',
+        'create' => 'web.controls.create',
+        'store' => 'web.controls.store',
+        'show' => 'web.controls.show',
+        'edit' => 'web.controls.edit',
+        'update' => 'web.controls.update',
+        'destroy' => 'web.controls.destroy',
+    ]);
+
 // Rute untuk tampilan web data sensor (sensordata)
 Route::middleware('auth')->get('/sensordata', [SensorDataController::class, 'indexWeb'])->name('web.sensordata.index');
-
-// Route MQTT
-// Route::get('/publish-sensor-data', [SensorController::class, 'publishSensorData'])->name('sensor.publishData');
 
 require __DIR__.'/auth.php';

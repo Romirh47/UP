@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Sensor;
 use App\Models\SensorData;
 use Illuminate\Http\Request;
-use PhpMqtt\Client\Facades\MQTT;
 
 class SensorDataController extends Controller
 {
@@ -29,12 +28,13 @@ class SensorDataController extends Controller
         return response()->json($sensorData); // Kembalikan data dengan format pagination
     }
 
-    // Menyimpan data sensor baru melalui API dan publish ke MQTT
+    // Menyimpan data sensor baru melalui API
     public function store(Request $request)
     {
+        // Validasi request
         $request->validate([
             'sensor_id' => 'required|exists:sensors,id',
-            'value' => 'required',
+            'value' => 'required|numeric',
         ]);
 
         // Simpan data sensor ke database
@@ -42,20 +42,6 @@ class SensorDataController extends Controller
             'sensor_id' => $request->sensor_id,
             'value' => $request->value,
         ]);
-
-        // Ambil nama sensor berdasarkan sensor_id
-        $sensor = Sensor::find($request->sensor_id);
-        $sensorName = $sensor->name;
-
-        // Publish data sensor ke broker MQTT dengan topik berdasarkan nama sensor
-        $data = [
-            'sensor_id' => $sensor->id,
-            'sensor_name' => $sensorName,
-            'value' => $request->value,
-            'created_at' => $sensorData->created_at,
-        ];
-
-        MQTT::connection()->publish("sensors/{$sensorName}", json_encode($data));
 
         return response()->json(['success' => 'Data sensor berhasil disimpan.', 'data' => $sensorData], 201);
     }
@@ -72,7 +58,7 @@ class SensorDataController extends Controller
     {
         $request->validate([
             'sensor_id' => 'required|exists:sensors,id',
-            'value' => 'required',
+            'value' => 'required|numeric',
         ]);
 
         $sensorData = SensorData::findOrFail($id);
@@ -80,20 +66,6 @@ class SensorDataController extends Controller
             'sensor_id' => $request->sensor_id,
             'value' => $request->value,
         ]);
-
-        // Ambil nama sensor berdasarkan sensor_id
-        $sensor = Sensor::find($request->sensor_id);
-        $sensorName = $sensor->name;
-
-        // Publish data sensor yang diperbarui ke broker MQTT dengan topik berdasarkan nama sensor
-        $data = [
-            'sensor_id' => $sensor->id,
-            'sensor_name' => $sensorName,
-            'value' => $request->value,
-            'updated_at' => $sensorData->updated_at,
-        ];
-
-        MQTT::connection()->publish("sensors/{$sensorName}", json_encode($data));
 
         return response()->json(['success' => 'Data sensor berhasil diperbarui.', 'data' => $sensorData]);
     }

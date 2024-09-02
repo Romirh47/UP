@@ -5,10 +5,10 @@
         <div class="col-lg-12 d-flex align-items-stretch">
             <div class="card w-100">
                 <div class="card-body">
-                    <h2 class="card-title">Users List</h2>
+                    <h2 class="card-title">Daftar Pengguna</h2>
                     <div class="d-flex justify-content-end mb-3">
                         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahModal">
-                            <i class="cil-plus fs-6 me-2"></i> Add User
+                            <i class="cil-plus fs-6 me-2"></i> Tambah Pengguna
                         </a>
                     </div>
                     <div class="table-responsive">
@@ -16,10 +16,10 @@
                             <thead>
                                 <tr>
                                     <th scope="col">NO</th>
-                                    <th scope="col">Photo</th>
-                                    <th scope="col">Name</th>
+                                    <th scope="col">Foto</th>
+                                    <th scope="col">Nama</th>
                                     <th scope="col">Email</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -28,10 +28,10 @@
                                         <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
                                         <td>
                                             @if ($user->photo)
-                                                <img src="{{ Storage::url($user->photo) }}" alt="User Photo"
+                                                <img src="{{ Storage::url($user->photo) }}" alt="Foto Pengguna"
                                                     class="img-thumbnail" style="max-width: 100px;">
                                             @else
-                                                No Photo
+                                                Tidak Ada Foto
                                             @endif
                                         </td>
                                         <td>{{ $user->name }}</td>
@@ -48,7 +48,7 @@
                                                 <i class="cil-pencil"></i> Edit
                                             </button>
                                             <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $user->id }}">
-                                                <i class="cil-trash"></i> Delete
+                                                <i class="cil-trash"></i> Hapus
                                             </button>
                                         </td>
                                     </tr>
@@ -57,28 +57,28 @@
                         </table>
                     </div>
 
-                    <!-- Pagination Links -->
+                    <!-- Tautan Pagination -->
                     <div class="d-flex justify-content-start mt-3">
-                        <nav aria-label="Page navigation">
+                        <nav aria-label="Navigasi Halaman">
                             <ul class="pagination pagination-sm">
-                                <!-- Display previous button -->
+                                <!-- Tampilkan tombol sebelumnya -->
                                 <li class="page-item {{ $users->onFirstPage() ? 'disabled' : '' }}">
-                                    <a class="page-link" href="{{ $users->previousPageUrl() }}" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo; Previous</span>
+                                    <a class="page-link" href="{{ $users->previousPageUrl() }}" aria-label="Sebelumnya">
+                                        <span aria-hidden="true">&laquo; Sebelumnya</span>
                                     </a>
                                 </li>
 
-                                <!-- Display page numbers -->
+                                <!-- Tampilkan nomor halaman -->
                                 @for ($i = 1; $i <= $users->lastPage(); $i++)
                                     <li class="page-item {{ $users->currentPage() == $i ? 'active' : '' }}">
                                         <a class="page-link" href="{{ $users->url($i) }}">{{ $i }}</a>
                                     </li>
                                 @endfor
 
-                                <!-- Display next button -->
+                                <!-- Tampilkan tombol berikutnya -->
                                 <li class="page-item {{ !$users->hasMorePages() ? 'disabled' : '' }}">
-                                    <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
-                                        <span aria-hidden="true">Next &raquo;</span>
+                                    <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Berikutnya">
+                                        <span aria-hidden="true">Berikutnya &raquo;</span>
                                     </a>
                                 </li>
                             </ul>
@@ -90,101 +90,101 @@
         </div>
     </div>
 
-    <!-- Modal tambah user -->
+    <!-- Modal tambah pengguna -->
     <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <form class="modal-content" id="tambahForm" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tambahModalLabel">Add User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="tambahModalLabel">Tambah Pengguna</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
+                        <label for="name" class="form-label">Nama</label>
                         <input type="text" class="form-control" id="name" name="name" required
-                            placeholder="Enter Name">
+                            placeholder="Masukkan Nama">
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email" required
-                            placeholder="Enter Email">
+                            placeholder="Masukkan Email">
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
+                        <label for="password" class="form-label">Kata Sandi</label>
                         <input type="password" class="form-control" id="password" name="password" required
-                            placeholder="Enter Password">
+                            placeholder="Masukkan Kata Sandi">
                     </div>
                     <div class="mb-3">
-                        <label for="photo" class="form-label">Photo (Optional)</label>
+                        <label for="photo" class="form-label">Foto (Opsional)</label>
                         <input type="file" class="form-control" id="photo" name="photo">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal edit user -->
+    <!-- Modal edit pengguna -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <form class="modal-content" id="editForm" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="editModalLabel">Edit Pengguna</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="edit_id" name="id">
                     <div class="mb-3">
-                        <label for="edit_name" class="form-label">Name</label>
+                        <label for="edit_name" class="form-label">Nama</label>
                         <input type="text" class="form-control" id="edit_name" name="name" required
-                            placeholder="Enter Name">
+                            placeholder="Masukkan Nama">
                     </div>
                     <div class="mb-3">
                         <label for="edit_email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="edit_email" name="email" required
-                            placeholder="Enter Email">
+                            placeholder="Masukkan Email">
                     </div>
                     <div class="mb-3">
-                        <label for="edit_password" class="form-label">New Password</label>
+                        <label for="edit_password" class="form-label">Kata Sandi Baru</label>
                         <input type="password" class="form-control" id="edit_password" name="password"
-                            placeholder="Enter New Password">
+                            placeholder="Masukkan Kata Sandi Baru">
                     </div>
                     <div class="mb-3">
-                        <label for="edit_photo" class="form-label">Photo (Optional)</label>
+                        <label for="edit_photo" class="form-label">Foto (Opsional)</label>
                         <input type="file" class="form-control" id="edit_photo" name="photo">
                         <img id="edit_photo_preview" class="img-thumbnail mt-2" style="max-width: 100px; display: none;">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal detail user -->
+    <!-- Modal detail pengguna -->
     <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="detailModalLabel">User Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="detailModalLabel">Detail Pengguna</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Name:</strong> <span id="detail_name"></span></p>
+                    <p><strong>Nama:</strong> <span id="detail_name"></span></p>
                     <p><strong>Email:</strong> <span id="detail_email"></span></p>
-                    <p><strong>Photo:</strong> <br> <img id="detail_photo" src="" alt="User Photo"
+                    <p><strong>Foto:</strong> <br> <img id="detail_photo" src="" alt="Foto Pengguna"
                             class="img-fluid" style="display: none; max-width: 100px;"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
@@ -195,7 +195,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            // Tambah user
+            // Tambah pengguna
             $('#tambahForm').on('submit', function(e) {
                 e.preventDefault();
                 var formData = new FormData(this);
@@ -209,7 +209,7 @@
                         $('#tambahModal').modal('hide');
                         Swal.fire({
                             icon: 'success',
-                            title: 'Success',
+                            title: 'Sukses',
                             text: response.message,
                         }).then(() => {
                             location.reload();
@@ -219,13 +219,13 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Something went wrong!',
+                            text: 'Terjadi kesalahan!',
                         });
                     }
                 });
             });
 
-            // Set data edit modal
+            // Set data modal edit
             $('.edit-btn').on('click', function() {
                 let id = $(this).data('id');
                 let name = $(this).data('name');
@@ -243,7 +243,7 @@
                 }
             });
 
-            // Edit user
+            // Edit pengguna
             $('#editForm').on('submit', function(e) {
                 e.preventDefault();
                 var formData = new FormData(this);
@@ -258,7 +258,7 @@
                         $('#editModal').modal('hide');
                         Swal.fire({
                             icon: 'success',
-                            title: 'Success',
+                            title: 'Sukses',
                             text: response.message,
                         }).then(() => {
                             location.reload();
@@ -268,13 +268,13 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Something went wrong!',
+                            text: 'Terjadi kesalahan!',
                         });
                     }
                 });
             });
 
-            // Detail user
+            // Detail pengguna
             $('.detail-btn').on('click', function() {
                 let id = $(this).data('id');
                 $.ajax({
@@ -284,8 +284,7 @@
                         $('#detail_name').text(response.user.name);
                         $('#detail_email').text(response.user.email);
                         if (response.user.photo) {
-                            $('#detail_photo').attr('src', "{{ Storage::url('') }}" + response
-                                .user.photo).show();
+                            $('#detail_photo').attr('src', "{{ Storage::url('') }}" + response.user.photo).show();
                         } else {
                             $('#detail_photo').hide();
                         }
@@ -294,35 +293,34 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Something went wrong!',
+                            text: 'Terjadi kesalahan!',
                         });
                     }
                 });
             });
 
-            // Hapus user
+            // Hapus pengguna
             $('.delete-btn').on('click', function() {
                 let id = $(this).data('id');
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    title: 'Anda yakin?',
+                    text: "Data ini tidak dapat dikembalikan setelah dihapus!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: 'Ya, hapus!'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
                             type: 'DELETE',
-                            url: '{{ route('api.users.destroy', ':id') }}'.replace(':id',
-                                id),
+                            url: '{{ route('api.users.destroy', ':id') }}'.replace(':id', id),
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             success: function(response) {
                                 Swal.fire(
-                                    'Deleted!',
+                                    'Dihapus!',
                                     response.message,
                                     'success'
                                 ).then(() => {
@@ -333,8 +331,7 @@
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
-                                    text: xhr.responseJSON.message ||
-                                        'Something went wrong!',
+                                    text: xhr.responseJSON.message || 'Terjadi kesalahan!',
                                 });
                             }
                         });

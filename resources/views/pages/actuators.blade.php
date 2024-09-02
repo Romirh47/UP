@@ -6,6 +6,7 @@
             <div class="card w-100">
                 <div class="card-body">
                     <h2 class="card-title">Daftar Actuators</h2>
+                    <p id="totalCount" class="mb-3">Total Actuators: 0</p> <!-- Tambahkan elemen ini -->
                     <div class="d-flex justify-content-end mb-3">
                         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahModal">
                             <i class="ti ti-plus fs-6 me-2"></i> TAMBAH ACTUATOR
@@ -131,44 +132,53 @@
                         let rows = '';
                         response.data.forEach(function(actuator, index) {
                             rows += `<tr>
-                                <td>${(response.from + index)}</td>
-                                <td>${actuator.name}</td>
-                                <td>${actuator.description || 'N/A'}</td>
-                                <td>${formatDate(actuator.created_at)}</td>
-                                <td>${formatDate(actuator.updated_at)}</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm edit-btn" data-id="${actuator.id}" data-name="${actuator.name}" data-description="${actuator.description}" data-bs-toggle="modal" data-bs-target="#editModal">
-                                        Edit
-                                    </button>
-                                    <button class="btn btn-danger btn-sm delete-btn" data-id="${actuator.id}">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>`;
+                    <td>${(response.from + index)}</td>
+                    <td>${actuator.name}</td>
+                    <td>${actuator.description || 'N/A'}</td>
+                    <td>${formatDate(actuator.created_at)}</td>
+                    <td>${formatDate(actuator.updated_at)}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm edit-btn" data-id="${actuator.id}" data-name="${actuator.name}" data-description="${actuator.description}" data-bs-toggle="modal" data-bs-target="#editModal">
+                            Edit
+                        </button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="${actuator.id}">
+                            Delete
+                        </button>
+                    </td>
+                </tr>`;
                         });
                         $('#dataTable tbody').html(rows);
+
+                        // Perbarui jumlah data actuator
+                        $('#totalCount').text(`Total Actuators: ${response.total}`);
 
                         // Pagination
                         let pagination = '';
                         pagination += `<ul class="pagination">`;
                         if (!response.prev_page_url) {
-                            pagination += `<li class="page-item disabled"><span class="page-link">Previous</span></li>`;
+                            pagination +=
+                                `<li class="page-item disabled"><span class="page-link">Previous</span></li>`;
                         } else {
-                            pagination += `<li class="page-item"><a class="page-link" href="#" data-page="${response.current_page - 1}">Previous</a></li>`;
+                            pagination +=
+                                `<li class="page-item"><a class="page-link" href="#" data-page="${response.current_page - 1}">Previous</a></li>`;
                         }
 
                         for (let i = 1; i <= response.last_page; i++) {
                             if (i === response.current_page) {
-                                pagination += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
+                                pagination +=
+                                    `<li class="page-item active"><span class="page-link">${i}</span></li>`;
                             } else {
-                                pagination += `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                                pagination +=
+                                    `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
                             }
                         }
 
                         if (!response.next_page_url) {
-                            pagination += `<li class="page-item disabled"><span class="page-link">Next</span></li>`;
+                            pagination +=
+                                `<li class="page-item disabled"><span class="page-link">Next</span></li>`;
                         } else {
-                            pagination += `<li class="page-item"><a class="page-link" href="#" data-page="${response.current_page + 1}">Next</a></li>`;
+                            pagination +=
+                                `<li class="page-item"><a class="page-link" href="#" data-page="${response.current_page + 1}">Next</a></li>`;
                         }
                         pagination += `</ul>`;
 
@@ -182,6 +192,7 @@
                     }
                 });
             }
+
 
             // Panggil fungsi loadActuators saat halaman pertama kali dimuat
             loadActuators();
@@ -215,7 +226,8 @@
                             loadActuators(); // Memuat ulang data actuators
                             // Reset form dan hapus pesan kesalahan
                             $('#tambahForm')[0].reset();
-                            $('#tambahForm').find('.is-invalid').removeClass('is-invalid');
+                            $('#tambahForm').find('.is-invalid').removeClass(
+                                'is-invalid');
                             $('#tambahForm').find('.invalid-feedback').text('');
                         });
                     },
@@ -224,7 +236,8 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal',
-                            text: xhr.responseJSON.errors.name ? 'Nama actuator sudah ada!' : 'Terjadi kesalahan!',
+                            text: xhr.responseJSON.errors.name ?
+                                'Nama actuator sudah ada!' : 'Terjadi kesalahan!',
                         });
                     },
                     complete: function() {
@@ -272,7 +285,8 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal',
-                            text: xhr.responseJSON.errors.name ? 'Nama actuator sudah ada!' : 'Terjadi kesalahan!',
+                            text: xhr.responseJSON.errors.name ?
+                                'Nama actuator sudah ada!' : 'Terjadi kesalahan!',
                         });
                     },
                     complete: function() {
@@ -299,27 +313,33 @@
                         $('#loading').show(); // Menampilkan animasi loading
 
                         $.ajax({
-                            url: '{{ route('api.actuators.destroy', ':id') }}'.replace(':id', id),
+                            url: '{{ route('api.actuators.destroy', ':id') }}'.replace(
+                                ':id', id),
                             type: 'DELETE',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             success: function(response) {
-                                console.log('Respons hapus actuator:', response); // Debugging
+                                console.log('Respons hapus actuator:',
+                                response); // Debugging
                                 Swal.fire(
                                     'Terhapus!',
-                                    response.message || 'Data actuator berhasil dihapus.',
+                                    response.message ||
+                                    'Data actuator berhasil dihapus.',
                                     'success'
                                 ).then(() => {
-                                    loadActuators(); // Memuat ulang data actuators
+                                    loadActuators
+                                (); // Memuat ulang data actuators
                                 });
                             },
                             error: function(xhr) {
-                                console.error('Error AJAX hapus actuator:', xhr); // Debugging
+                                console.error('Error AJAX hapus actuator:',
+                                xhr); // Debugging
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Gagal',
-                                    text: xhr.responseJSON.message || 'Terjadi kesalahan!',
+                                    text: xhr.responseJSON.message ||
+                                        'Terjadi kesalahan!',
                                 });
                             },
                             complete: function() {

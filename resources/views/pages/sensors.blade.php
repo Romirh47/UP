@@ -6,7 +6,9 @@
             <div class="card w-100">
                 <div class="card-body">
                     <h2 class="card-title">Data Sensor</h2>
-                    <div class="d-flex justify-content-end mb-3">
+                    <div class="d-flex justify-content-between mb-3">
+                        <!-- Tambahkan elemen untuk menampilkan jumlah data sensor -->
+                        <div id="totalData" class="fw-bold"></div>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahModal">
                             <i class="ti ti-plus fs-6 me-2"></i> TAMBAH DATA SENSOR
                         </button>
@@ -22,7 +24,7 @@
                                 <tr>
                                     <th scope="col">NO</th>
                                     <th scope="col">Nama Sensor</th>
-                                    <th scope="col">Tipe</th>
+                                    <th scope="col">Satuan</th>
                                     <th scope="col">Deskripsi</th>
                                     <th scope="col">Dibuat</th>
                                     <th scope="col">Aksi</th>
@@ -158,6 +160,9 @@
                         });
                         $('#sensorTable tbody').html(rows);
 
+                        // Perbarui jumlah data yang tersedia
+                        $('#totalData').text(`Jumlah Data: ${response.total}`);
+
                         // Pagination
                         let pagination = '';
                         pagination += `<ul class="pagination">`;
@@ -188,31 +193,49 @@
                         }
                         pagination += `</ul>`;
 
-                        $('#paginationNav').html(pagination); // Perbarui elemen pagination
-                    },
-                    error: function() {
-                        Swal.fire('Terjadi kesalahan', 'Tidak dapat memuat data sensor.', 'error');
-                    },
-                    complete: function() {
+                        $('#paginationNav').html(pagination);
+
                         $('#loading').hide(); // Sembunyikan animasi loading
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        $('#loading').hide(); // Sembunyikan animasi loading jika terjadi error
                     }
                 });
             }
 
-            // Panggil fungsi loadData saat halaman pertama kali dimuat
+            // Panggil fungsi loadData() untuk pertama kali
             loadData();
 
-            // Event delegation untuk pagination
-            $('#paginationNav').on('click', '.page-link', function(e) {
+            // Tangani pagination
+            $(document).on('click', '#paginationNav a.page-link', function(e) {
                 e.preventDefault();
                 const page = $(this).data('page');
-                if (page) {
-                    loadData(page);
-                }
+                loadData(page);
             });
 
-            // Event delegation untuk tombol edit
-            $('#sensorTable').on('click', '.edit-btn', function() {
+            // Tambah data sensor
+            $('#tambahForm').submit(function(e) {
+                e.preventDefault();
+                const formData = $(this).serialize();
+                $.ajax({
+                    url: "{{ route('api.sensors.store') }}",
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        $('#tambahModal').modal('hide');
+                        loadData(); // Muat ulang data setelah menambah data baru
+                        Swal.fire('Sukses', 'Data sensor berhasil ditambahkan.', 'success');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        Swal.fire('Error', 'Terjadi kesalahan saat menambah data sensor.', 'error');
+                    }
+                });
+            });
+
+            // Tampilkan modal edit dengan data yang ada
+            $(document).on('click', '.edit-btn', function() {
                 const id = $(this).data('id');
                 const name = $(this).data('name');
                 const type = $(this).data('type');
@@ -224,79 +247,64 @@
                 $('#editModal').modal('show');
             });
 
-            // Event delegation untuk tombol hapus
-            $('#sensorTable').on('click', '.delete-btn', function() {
+            // Edit data sensor
+            $('#editForm').submit(function(e) {
+                e.preventDefault();
+                const id = $('#edit_id').val();
+                const formData = $(this).serialize();
+                $.ajax({
+                    url: "{{ route('api.sensors.update', ':id') }}".replace(':id', id),
+                    type: 'PUT',
+                    data: formData,
+                    success: function(response) {
+                        $('#editModal').modal('hide');
+                        loadData(); // Muat ulang data setelah mengedit data
+                        Swal.fire('Sukses', 'Data sensor berhasil diperbarui.', 'success');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        Swal.fire('Error', 'Terjadi kesalahan saat memperbarui data sensor.', 'error');
+                    }
+                });
+            });
+
+            // Hapus data sensor
+            $(document).on('click', '.delete-btn', function() {
                 const id = $(this).data('id');
                 Swal.fire({
                     title: 'Apakah Anda yakin?',
-                    text: "Data ini akan dihapus!",
+                    text: "Data sensor ini akan dihapus secara permanen!",
                     icon: 'warning',
                     showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
                     confirmButtonText: 'Ya, hapus!',
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: "{{ url('sensors') }}/" + id,
+                            url: "{{ route('api.sensors.destroy', ':id') }}".replace(':id', id),
                             type: 'DELETE',
-                            data: {
-                                _token: '{{ csrf_token() }}'
+                            success: function(response) {
+                                loadData(); // Muat ulang data setelah menghapus data
+                                Swal.fire('Terhapus!', 'Data sensor berhasil dihapus.', 'success');
                             },
-                            success: function() {
-                                Swal.fire('Terhapus!', 'Data sensor telah dihapus.', 'success');
-                                loadData(); // Muat ulang data setelah penghapusan
-                            },
-                            error: function() {
-                                Swal.fire('Terjadi kesalahan', 'Tidak dapat menghapus data sensor.', 'error');
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                                Swal.fire('Error', 'Terjadi kesalahan saat menghapus data sensor.', 'error');
                             }
                         });
                     }
                 });
             });
 
-            // Menangani form tambah sensor
-            $('#tambahForm').submit(function(e) {
-                e.preventDefault();
-                $('#loading').show(); // Tampilkan animasi loading
-                $.ajax({
-                    url: "{{ route('api.sensors.store') }}",
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function() {
-                        Swal.fire('Berhasil!', 'Data sensor telah ditambahkan.', 'success');
-                        $('#tambahModal').modal('hide');
-                        loadData(); // Muat ulang data setelah penambahan
-                    },
-                    error: function() {
-                        Swal.fire('Terjadi kesalahan', 'Tidak dapat menambahkan data sensor.', 'error');
-                    },
-                    complete: function() {
-                        $('#loading').hide(); // Sembunyikan animasi loading
-                    }
-                });
+            // Reset form ketika modal ditutup
+            $('#tambahModal').on('hidden.bs.modal', function () {
+                $('#tambahForm')[0].reset();
             });
 
-            // Menangani form edit sensor
-            $('#editForm').submit(function(e) {
-                e.preventDefault();
-                $('#loading').show(); // Tampilkan animasi loading
-                const id = $('#edit_id').val();
-                $.ajax({
-                    url: "{{ url('sensors') }}/" + id,
-                    type: 'PUT',
-                    data: $(this).serialize(),
-                    success: function() {
-                        Swal.fire('Berhasil!', 'Data sensor telah diperbarui.', 'success');
-                        $('#editModal').modal('hide');
-                        loadData(); // Muat ulang data setelah pembaruan
-                    },
-                    error: function() {
-                        Swal.fire('Terjadi kesalahan', 'Tidak dapat memperbarui data sensor.', 'error');
-                    },
-                    complete: function() {
-                        $('#loading').hide(); // Sembunyikan animasi loading
-                    }
-                });
+            $('#editModal').on('hidden.bs.modal', function () {
+                $('#editForm')[0].reset();
             });
         });
     </script>

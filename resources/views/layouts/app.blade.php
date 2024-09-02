@@ -88,7 +88,7 @@
                                     <li class="sidebar-item">
                                         <a class="sidebar-link" href="{{ route('web.actuators.index') }}"
                                             aria-expanded="false">
-                                            <iconify-icon icon="solar:login-3-line-duotone"></iconify-icon>
+                                            <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
                                             <span class="hide-menu">AKTUATOR</span>
                                         </a>
                                     </li>
@@ -99,46 +99,14 @@
                                             <span class="hide-menu">ACTUATOR DATA</span>
                                         </a>
                                     </li>
-                                    {{-- <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('humidities.index') }}"
-                                            aria-expanded="false">
-                                            <iconify-icon icon="solar:danger-circle-line-duotone"></iconify-icon>
-                                            <span class="hide-menu">HUMIDITY</span>
-                                        </a>
-                                    </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('intensities.index') }}"
+                                        <a class="sidebar-link" href="{{route('web.controls.index')}}"
                                             aria-expanded="false">
-                                            <iconify-icon
-                                                icon="solar:bookmark-square-minimalistic-line-duotone"></iconify-icon>
-                                            <span class="hide-menu">INTENSITY</span>
+                                            <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
+                                            <span class="hide-menu">CONTROL</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('moistures.index') }}"
-                                            aria-expanded="false">
-                                            <iconify-icon icon="solar:file-text-line-duotone"></iconify-icon>
-                                            <span class="hide-menu">MOISTURES</span>
-                                        </a>
-                                    </li> --}}
-                                    {{-- <!-- Divider -->
-                                    <li>
-                                        <span class="sidebar-divider lg"></span>
-                                    </li>
-                                    <!-- Actuator Section -->
-                                    <li class="nav-small-cap">
-                                        <iconify-icon icon="solar:menu-dots-linear"
-                                            class="nav-small-cap-icon fs-4"></iconify-icon>
-                                        <span class="hide-menu">AKTUATOR</span>
-                                    </li>
-                                    <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('actuators.index') }}"
-                                            aria-expanded="false">
-                                            <iconify-icon icon="solar:login-3-line-duotone"></iconify-icon>
-                                            <span class="hide-menu">AKTUATOR</span>
-                                        </a>
-                                    </li>
-                                    <!-- Divider --> --}}
+                                    {{-- <!-- Divider --> --}}
                                     <li>
                                         <span class="sidebar-divider lg"></span>
                                     </li>

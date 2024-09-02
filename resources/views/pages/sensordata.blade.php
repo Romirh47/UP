@@ -6,10 +6,9 @@
             <div class="card w-100">
                 <div class="card-body">
                     <h2 class="card-title">Data Sensor</h2>
-                    <div class="d-flex justify-content-end mb-3">
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahModal">
-                            <i class="ti ti-plus fs-6 me-2"></i> TAMBAH DATA SENSOR
-                        </button>
+                    <!-- Menampilkan jumlah total data -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <span id="totalData">Total Data: 0</span> <!-- Menampilkan total data di sini -->
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped" id="sensorTable">
@@ -33,72 +32,6 @@
                     </nav>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah Data Sensor -->
-    <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form class="modal-content" id="tambahForm">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="tambahModalLabel">Tambah Data Sensor</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="sensor_id" class="form-label">Sensor</label>
-                        <select class="form-control" id="sensor_id" name="sensor_id" required>
-                            @foreach ($sensors as $sensor)
-                                <option value="{{ $sensor->id }}">{{ $sensor->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="value" class="form-label">Nilai</label>
-                        <input type="number" class="form-control" id="value" name="value" required
-                            placeholder="Masukkan Nilai Sensor">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Edit Data Sensor -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form class="modal-content" id="editForm">
-                @csrf
-                @method('PUT')
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit Data Sensor</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="edit_id" name="id">
-                    <div class="mb-3">
-                        <label for="edit_sensor_id" class="form-label">Sensor</label>
-                        <select class="form-control" id="edit_sensor_id" name="sensor_id" required>
-                            @foreach ($sensors as $sensor)
-                                <option value="{{ $sensor->id }}">{{ $sensor->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_value" class="form-label">Nilai</label>
-                        <input type="number" class="form-control" id="edit_value" name="value" required
-                            placeholder="Masukkan Nilai Sensor">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -141,15 +74,16 @@
                                 <td>${(response.from + index)}</td>
                                 <td>${data.sensor.name}</td>
                                 <td>${data.value}</td>
-                                <td>${formatDate(data.created_at)}</td> <!-- Format tanggal -->
+                                <td>${formatDate(data.created_at)}</td>
                                 <td>
-                                    <!-- Kode tombol edit dinonaktifkan dengan komentar -->
-                                    <!-- <button class="btn btn-warning btn-sm edit-btn" data-id="${data.id}" data-sensor-id="${data.sensor_id}" data-value="${data.value}" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button> -->
                                     <button class="btn btn-sm btn-danger delete-btn" data-id="${data.id}">Delete</button>
                                 </td>
                             </tr>`;
                         });
                         $('#sensorTable tbody').html(rows);
+
+                        // Tampilkan jumlah total data
+                        $('#totalData').text('Total Data: ' + response.total);
 
                         // Pagination
                         let pagination = '';
@@ -194,58 +128,6 @@
                 loadData(page); // Panggil fungsi loadData dengan halaman yang sesuai
             });
 
-            // Tambah data sensor
-            $('#tambahForm').on('submit', function(e) {
-                e.preventDefault();
-                let formData = $(this).serialize();
-                $.ajax({
-                    url: "{{ route('api.sensordata.store') }}",
-                    type: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        $('#tambahModal').modal('hide');
-                        $('#tambahForm')[0].reset(); // Reset form
-                        Swal.fire('Berhasil', response.success, 'success').then(function() {
-                            loadData(); // Reload data setelah berhasil menambah
-                        });
-                    },
-                    error: function(xhr) {
-                        Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
-                    }
-                });
-            });
-
-            // Event delegation untuk tombol edit dinonaktifkan
-            // $('#sensorTable').on('click', '.edit-btn', function() {
-            //     let id = $(this).data('id');
-            //     let sensorId = $(this).data('sensor-id');
-            //     let value = $(this).data('value');
-            //     $('#edit_id').val(id);
-            //     $('#edit_sensor_id').val(sensorId);
-            //     $('#edit_value').val(value);
-            // });
-
-            // Edit data sensor dinonaktifkan
-            // $('#editForm').on('submit', function(e) {
-            //     e.preventDefault();
-            //     let id = $('#edit_id').val();
-            //     let formData = $(this).serialize();
-            //     $.ajax({
-            //         url: `{{ route('api.sensordata.update', '') }}/${id}`,
-            //         type: 'PUT',
-            //         data: formData,
-            //         success: function(response) {
-            //             $('#editModal').modal('hide');
-            //             Swal.fire('Berhasil', response.success, 'success').then(function() {
-            //                 loadData(); // Reload data setelah berhasil mengedit
-            //             });
-            //         },
-            //         error: function(xhr) {
-            //             Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
-            //         }
-            //     });
-            // });
-
             // Event delegation untuk tombol delete
             $('#sensorTable').on('click', '.delete-btn', function() {
                 let id = $(this).data('id');
@@ -278,5 +160,3 @@
         });
     </script>
 @endpush
-
-

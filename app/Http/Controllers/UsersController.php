@@ -13,7 +13,7 @@ class UsersController extends Controller
     public function index()
     {
         // Menentukan jumlah item per halaman
-        $users = User::paginate(5); // Mengambil 5 pengguna per halaman
+        $users = User::paginate(10); // Mengambil 10 pengguna per halaman
         return view('pages.users.users', compact('users'));
     }
 
@@ -39,7 +39,7 @@ class UsersController extends Controller
             'photo' => $photoPath,
         ]);
 
-        return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
+        return response()->json(['message' => 'Pengguna berhasil dibuat', 'user' => $user], 201);
     }
 
     // Metode untuk menampilkan detail pengguna
@@ -48,7 +48,7 @@ class UsersController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json(['message' => 'Pengguna tidak ditemukan'], 404);
         }
 
         return response()->json(['user' => $user], 200);
@@ -60,7 +60,7 @@ class UsersController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json(['message' => 'Pengguna tidak ditemukan'], 404);
         }
 
         $request->validate([
@@ -86,7 +86,7 @@ class UsersController extends Controller
 
         $user->save();
 
-        return response()->json(['message' => 'User updated successfully', 'user' => $user], 200);
+        return response()->json(['message' => 'Pengguna berhasil diperbarui', 'user' => $user], 200);
     }
 
     // Metode untuk menghapus pengguna
@@ -95,7 +95,7 @@ class UsersController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json(['message' => 'Pengguna tidak ditemukan'], 404);
         }
 
         // Periksa apakah foto ada dan hapus jika ada
@@ -106,9 +106,6 @@ class UsersController extends Controller
         // Hapus pengguna
         $user->delete();
 
-        return response()->json(['message' => 'User deleted successfully'], 200);
+        return response()->json(['message' => 'Pengguna berhasil dihapus'], 200);
     }
-
 }
-
-
