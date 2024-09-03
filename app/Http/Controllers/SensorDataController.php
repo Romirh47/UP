@@ -13,7 +13,7 @@ class SensorDataController extends Controller
     {
         $sensorData = SensorData::with('sensor')
             ->orderBy('created_at', 'desc')
-            ->paginate(10); // Menambahkan pagination
+            ->paginate(50); // Menambahkan pagination
         $sensors = Sensor::all();
 
         return view('pages.sensordata', compact('sensorData', 'sensors'));
@@ -24,11 +24,11 @@ class SensorDataController extends Controller
     {
         $sensorData = SensorData::with('sensor')
             ->orderBy('created_at', 'desc')
-            ->paginate(10); // Menambahkan pagination
+            ->paginate(50); // Menambahkan pagination
         return response()->json($sensorData); // Kembalikan data dengan format pagination
     }
 
-    // Menyimpan data sensor baru melalui API
+
     public function store(Request $request)
     {
         // Validasi request
@@ -45,6 +45,8 @@ class SensorDataController extends Controller
 
         return response()->json(['success' => 'Data sensor berhasil disimpan.', 'data' => $sensorData], 201);
     }
+
+
 
     // Menampilkan data sensor tertentu dalam format JSON
     public function show($id)
@@ -70,12 +72,18 @@ class SensorDataController extends Controller
         return response()->json(['success' => 'Data sensor berhasil diperbarui.', 'data' => $sensorData]);
     }
 
-    // Menghapus data sensor melalui API
-    public function destroy($id)
+    public function destroy($id = null)
     {
-        $sensorData = SensorData::findOrFail($id);
-        $sensorData->delete();
-
-        return response()->json(['success' => 'Data sensor berhasil dihapus.']);
+        if ($id === 'all') {
+            // Hapus semua data sensor
+            SensorData::truncate(); // Menghapus semua data di tabel
+            return response()->json(['success' => 'Semua data berhasil dihapus.']);
+        } else {
+            // Hapus data sensor berdasarkan ID
+            $sensorData = SensorData::findOrFail($id);
+            $sensorData->delete();
+            return response()->json(['success' => 'Data berhasil dihapus.']);
+        }
     }
+
 }

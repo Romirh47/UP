@@ -6,8 +6,9 @@
             <div class="card w-100">
                 <div class="card-body">
                     <h2 class="card-title">Data Actuator</h2>
-                    <div class="d-flex justify-content-end mb-3">
-                        <div id="totalData" class="me-3"></div> <!-- Elemen untuk menampilkan jumlah data -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <button id="deleteAllBtn" class="btn btn-danger btn-lg">Delete All</button>
+                        <div id="totalData" class="me-4"></div>
                     </div>
                     <div id="loading"
                         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999; text-align: center; padding-top: 20%;">
@@ -45,130 +46,152 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function() {
-            function loadData(page = 1) {
-                $('#loading').show();
-                $.ajax({
-                    url: "{{ route('api.actuator_values.index') }}?page=" + page,
-                    type: 'GET',
-                    success: function(response) {
-                        $('#loading').hide();
-                        let rows = '';
-                        if (response.data && Array.isArray(response.data)) {
-                            response.data.forEach(function(actuatorValue, index) {
-                                rows += `<tr>
-                                    <td>${(response.from + index)}</td>
-                                    <td>${actuatorValue.actuator ? actuatorValue.actuator.name : 'Tidak ada'}</td>
-                                    <td>${actuatorValue.value === 1 ? 'On' : 'Off'}</td>
-                                    <td>${formatDate(actuatorValue.created_at)}</td>
-                                    <td>
-                                        <button class="btn btn-danger btn-sm delete-btn" data-id="${actuatorValue.id}">Hapus</button>
-                                    </td>
-                                </tr>`;
-                            });
-                            $('#actuatorTable tbody').html(rows);
-
-                            // Update jumlah data
-                            $('#totalData').text(`Jumlah Data: ${response.total}`);
-                        } else {
-                            $('#actuatorTable tbody').html(
-                                '<tr><td colspan="5" class="text-center">Tidak ada data ditemukan</td></tr>'
-                            );
-
-                            // Update jumlah data
-                            $('#totalData').text('Jumlah Data: 0');
-                        }
-
-                        // Pagination
-                        let pagination = '';
-                        pagination += `<ul class="pagination">`;
-                        if (response.prev_page_url) {
-                            pagination +=
-                                `<li class="page-item"><a class="page-link" href="#" data-page="${response.current_page - 1}">Previous</a></li>`;
-                        } else {
-                            pagination +=
-                                `<li class="page-item disabled"><span class="page-link">Previous</span></li>`;
-                        }
-
-                        for (let i = 1; i <= response.last_page; i++) {
-                            if (i === response.current_page) {
-                                pagination +=
-                                    `<li class="page-item active"><span class="page-link">${i}</span></li>`;
-                            } else {
-                                pagination +=
-                                    `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-                            }
-                        }
-
-                        if (response.next_page_url) {
-                            pagination +=
-                                `<li class="page-item"><a class="page-link" href="#" data-page="${response.current_page + 1}">Next</a></li>`;
-                        } else {
-                            pagination +=
-                                `<li class="page-item disabled"><span class="page-link">Next</span></li>`;
-                        }
-                        pagination += `</ul>`;
-
-                        $('#paginationNav').html(pagination);
-                    },
-                    error: function(xhr) {
-                        $('#loading').hide();
-                        console.error('Error:', xhr.responseText);
-                        Swal.fire('Terjadi kesalahan', 'Tidak dapat memuat data actuator.', 'error');
-                    }
-                });
-            }
-
-            loadData();
-
-            $('#actuatorTable').on('click', '.delete-btn', function() {
-                const id = $(this).data('id');
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: "Data actuator yang dihapus tidak dapat dikembalikan!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, hapus!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: `{{ route('api.actuator_values.destroy', '') }}/${id}`,
-                            type: 'DELETE',
-                            data: {
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function(response) {
-                                Swal.fire('Terhapus!',
-                                    'Data actuator berhasil dihapus.', 'success');
-                                loadData();
-                            },
-                            error: function(xhr) {
-                                console.error('Error:', xhr.responseText);
-                                Swal.fire('Terjadi kesalahan',
-                                    'Tidak dapat menghapus data actuator.', 'error');
-                            }
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        // Fungsi untuk memuat data actuator dan pagination
+        function loadData(page = 1) {
+            $('#loading').show(); // Tampilkan animasi loading
+            $.ajax({
+                url: "{{ route('api.actuator_values.index') }}?page=" + page, // Menggunakan query string untuk paginasi
+                type: 'GET',
+                success: function(response) {
+                    $('#loading').hide(); // Sembunyikan animasi loading
+                    let rows = '';
+                    if (response.data && Array.isArray(response.data)) {
+                        response.data.forEach(function(actuatorValue, index) {
+                            rows += `<tr>
+                                <td>${(response.from + index)}</td>
+                                <td>${actuatorValue.actuator ? actuatorValue.actuator.name : 'Tidak ada'}</td>
+                                <td>${actuatorValue.value === 1 ? 'On' : 'Off'}</td>
+                                <td>${formatDate(actuatorValue.created_at)}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="${actuatorValue.id}">Hapus</button>
+                                </td>
+                            </tr>`;
                         });
-                    }
-                });
-            });
+                        $('#actuatorTable tbody').html(rows);
 
-            // Pagination click handler
-            $('#paginationNav').on('click', 'a.page-link', function(e) {
-                e.preventDefault();
-                let page = $(this).data('page');
-                if (page) {
-                    loadData(page);
+                        // Tampilkan jumlah total data
+                        $('#totalData').text('Jumlah Data: ' + response.total);
+                    } else {
+                        $('#actuatorTable tbody').html('<tr><td colspan="5" class="text-center">Tidak ada data ditemukan</td></tr>');
+                        $('#totalData').text('Jumlah Data: 0');
+                    }
+
+                    // Pagination
+                    let pagination = '';
+                    pagination += `<ul class="pagination">`;
+                    if (response.prev_page_url == null) {
+                        pagination += `<li class="page-item disabled"><span class="page-link">Previous</span></li>`;
+                    } else {
+                        pagination += `<li class="page-item"><a class="page-link" href="#" data-page="${response.current_page - 1}">Previous</a></li>`;
+                    }
+
+                    for (let i = 1; i <= response.last_page; i++) {
+                        if (i === response.current_page) {
+                            pagination += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
+                        } else {
+                            pagination += `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                        }
+                    }
+
+                    if (response.next_page_url == null) {
+                        pagination += `<li class="page-item disabled"><span class="page-link">Next</span></li>`;
+                    } else {
+                        pagination += `<li class="page-item"><a class="page-link" href="#" data-page="${response.current_page + 1}">Next</a></li>`;
+                    }
+                    pagination += `</ul>`;
+
+                    $('#paginationNav').html(pagination); // Perbarui elemen pagination
+                },
+                error: function(xhr) {
+                    $('#loading').hide(); // Sembunyikan animasi loading
+                    Swal.fire('Terjadi kesalahan', 'Tidak dapat memuat data actuator.', 'error');
                 }
             });
+        }
 
-            function formatDate(dateStr) {
-                let date = new Date(dateStr);
-                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-            }
+        // Panggil fungsi loadData saat halaman pertama kali dimuat
+        loadData();
+
+        // Event delegation untuk pagination
+        $('#paginationNav').on('click', '.page-link', function(e) {
+            e.preventDefault();
+            let page = $(this).data('page');
+            loadData(page); // Panggil fungsi loadData dengan halaman yang sesuai
         });
-    </script>
+
+        // Event delegation untuk tombol delete
+        $('#actuatorTable').on('click', '.delete-btn', function() {
+            let id = $(this).data('id');
+            Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: 'Apakah Anda yakin ingin menghapus data ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `{{ route('api.actuator_values.destroy', '') }}/${id}`,
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            Swal.fire('Berhasil', 'Data actuator berhasil dihapus.', 'success').then(function() {
+                                loadData(); // Reload data setelah berhasil menghapus
+                            });
+                        },
+                        error: function(xhr) {
+                            Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Event handler untuk tombol "Delete All"
+        $('#deleteAllBtn').click(function() {
+            Swal.fire({
+                title: 'Konfirmasi Hapus Semua',
+                text: 'Apakah Anda yakin ingin menghapus semua data actuator?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus Semua!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `{{ route('api.actuator_values.destroy', ['id' => 'all']) }}`, // URL untuk menghapus semua data
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            Swal.fire('Berhasil', 'Semua data actuator berhasil dihapus.', 'success').then(function() {
+                                loadData(); // Reload data setelah semua data dihapus
+                            });
+                        },
+                        error: function(xhr) {
+                            Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Fungsi untuk format tanggal
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+    });
+</script>
 @endpush

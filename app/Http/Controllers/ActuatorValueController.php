@@ -20,7 +20,7 @@ class ActuatorValueController extends Controller
     public function apiIndex()
     {
         try {
-            $actuatorValues = ActuatorValue::with('actuator')->orderBy('created_at', 'desc')->paginate(10);
+            $actuatorValues = ActuatorValue::with('actuator')->orderBy('created_at', 'desc')->paginate(50);
             return response()->json($actuatorValues);
         } catch (\Exception $e) {
             return response()->json([
@@ -55,6 +55,8 @@ class ActuatorValueController extends Controller
                 'actuator_id' => $request->actuator_id,
                 'value' => $request->value,
             ]);
+
+
 
             return response()->json([
                 'success' => 'Data actuator berhasil disimpan.',
@@ -95,6 +97,8 @@ class ActuatorValueController extends Controller
                 'value' => $request->value,
             ]);
 
+
+
             return response()->json([
                 'success' => 'Data actuator berhasil diperbarui.',
                 'data' => $actuatorValue
@@ -106,20 +110,19 @@ class ActuatorValueController extends Controller
         }
     }
 
-    // Menghapus data actuator
-    public function destroy($id)
-    {
-        try {
-            $actuatorValue = ActuatorValue::findOrFail($id);
-            $actuatorValue->delete();
-
-            return response()->json([
-                'success' => 'Data actuator berhasil dihapus.'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage()
-            ], 500);
-        }
+    // Menghapus data actuator berdasarkan ID
+    public function destroy($id = null)
+{
+    if ($id === 'all') {
+        // Hapus semua data actuator
+        ActuatorValue::truncate(); // Menghapus semua data di tabel
+        return response()->json(['success' => 'Semua data actuator berhasil dihapus.']);
+    } else {
+        // Hapus data actuator berdasarkan ID
+        $actuatorValue = ActuatorValue::findOrFail($id);
+        $actuatorValue->delete();
+        return response()->json(['success' => 'Data actuator berhasil dihapus.']);
     }
+}
+
 }

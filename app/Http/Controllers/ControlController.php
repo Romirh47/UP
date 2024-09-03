@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActuatorValue;
 use Illuminate\Http\Request;
 use App\Models\Actuator;
+use PhpMqtt\Client\Facades\MQTT; // Pastikan Anda menggunakan library MQTT yang sesuai
 
 class ControlController extends Controller
 {
@@ -37,11 +38,37 @@ class ControlController extends Controller
         $value = $request->action === 'on' ? 1 : 0;
 
         // Simpan nilai baru untuk aktuator di tabel actuator_values
-        ActuatorValue::create([
+        $actuatorValue = ActuatorValue::create([
             'actuator_id' => $id,
             'value' => $value,
         ]);
 
+        // Publish nilai actuator ke MQTT
+        $this->publishActuatorValue($id, $value);
+
         return response()->json(['success' => 'Status aktuator berhasil diperbarui!']);
+    }
+
+    // Fungsi untuk menerbitkan nilai actuator ke topik MQTT
+    private function publishActuatorValue($actuatorId, $value)
+    {
+        // Inisialisasi MQTT Client
+        $client = MQTT::connection();
+
+        // Mendapatkan nama actuator dari database
+        $actuator = Actuator::find($actuatorId);
+        $actuatorName = $actuator ? $actuator->name : 'unknown';
+
+        // Membuat payload
+        $payload = json_encode([
+            'actuator_id' => $actuatorId,
+            'value' => $value,
+        ]);
+
+        // Topik actuator
+        $actuatorTopic = "IOT/ACTUATORS";
+
+        // Publish pesan
+        $client->publish($actuatorTopic, $payload, 1); // QoS Level 1
     }
 }

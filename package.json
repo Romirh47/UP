@@ -16,6 +16,8 @@
     },
     "type": "module",
     "dependencies": {
-        "@coreui/icons": "^3.0.1"
+        "@coreui/icons": "^3.0.1",
+        "laravel-echo": "^1.16.1",
+        "pusher-js": "^8.4.0-rc2"
     }
 }

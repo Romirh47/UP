@@ -17,6 +17,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">NO</th>
+                                    <th scope="col">ID</th> <!-- Tambahkan kolom ID -->
                                     <th scope="col">Nama Actuators</th>
                                     <th scope="col">Deskripsi</th>
                                     <th scope="col">Dibuat</th>
@@ -133,6 +134,7 @@
                         response.data.forEach(function(actuator, index) {
                             rows += `<tr>
                     <td>${(response.from + index)}</td>
+                    <td>${actuator.id}</td> <!-- Tambahkan kolom ID -->
                     <td>${actuator.name}</td>
                     <td>${actuator.description || 'N/A'}</td>
                     <td>${formatDate(actuator.created_at)}</td>

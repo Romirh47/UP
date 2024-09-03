@@ -23,6 +23,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">NO</th>
+                                    <th scope="col">ID</th> <!-- Add ID column -->
                                     <th scope="col">Nama Sensor</th>
                                     <th scope="col">Satuan</th>
                                     <th scope="col">Deskripsi</th>
@@ -144,6 +145,7 @@
                         response.data.forEach(function(sensor, index) {
                             rows += `<tr>
                         <td>${(response.from + index)}</td>
+                        <td>${sensor.id}</td> <!-- Add ID column -->
                         <td>${sensor.name}</td>
                         <td>${sensor.type}</td>
                         <td>${sensor.description}</td>
