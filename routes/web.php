@@ -45,16 +45,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('web.profile.destroy');
 });
 
-// Rute untuk CRUD pengguna (users)
-Route::middleware('auth')->resource('users', UsersController::class)->names([
-    'index' => 'web.users.index',
-    'create' => 'web.users.create',
-    'store' => 'web.users.store',
-    'show' => 'web.users.show',
-    'edit' => 'web.users.edit',
-    'update' => 'web.users.update',
-    'destroy' => 'web.users.destroy',
-]);
+// Rute untuk CRUD pengguna (users) hanya untuk admin
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('users', UsersController::class)->names([
+        'index' => 'web.users.index',
+        'create' => 'web.users.create',
+        'store' => 'web.users.store',
+        'show' => 'web.users.show',
+        'edit' => 'web.users.edit',
+        'update' => 'web.users.update',
+        'destroy' => 'web.users.destroy',
+    ]);
+});
 
 // Rute untuk CRUD data aktuator (actuators)
 Route::middleware('auth')->resource('actuators', ActuatorController::class)->names([
@@ -89,16 +91,16 @@ Route::middleware('auth')->resource('sensors', SensorController::class)->names([
     'destroy' => 'web.sensors.destroy',
 ]);
 
-    // Rute untuk CRUD controls
-    Route::resource('controls', ControlController::class)->names([
-        'index' => 'web.controls.index',
-        'create' => 'web.controls.create',
-        'store' => 'web.controls.store',
-        'show' => 'web.controls.show',
-        'edit' => 'web.controls.edit',
-        'update' => 'web.controls.update',
-        'destroy' => 'web.controls.destroy',
-    ]);
+// Rute untuk CRUD controls
+Route::resource('controls', ControlController::class)->names([
+    'index' => 'web.controls.index',
+    'create' => 'web.controls.create',
+    'store' => 'web.controls.store',
+    'show' => 'web.controls.show',
+    'edit' => 'web.controls.edit',
+    'update' => 'web.controls.update',
+    'destroy' => 'web.controls.destroy',
+]);
 
 // routes/web.php
 Route::resource('settings', SettingController::class)->names([
@@ -114,7 +116,7 @@ Route::resource('settings', SettingController::class)->names([
 // Rute untuk tampilan web data sensor (sensordata)
 Route::middleware('auth')->get('/sensordata', [SensorDataController::class, 'indexWeb'])->name('web.sensordata.index');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // Route::get('actuators/status', [ControlController::class, 'getActuatorsStatus'])->name('actuators.status');
 
@@ -128,3 +130,5 @@ Route::middleware('auth')->resource('dashboard', DashboardController::class)->na
     'update' => 'web.dashboard.update',
     'destroy' => 'web.dashboard.destroy',
 ]);
+
+

@@ -56,7 +56,8 @@
                                         <span class="hide-menu">Home</span>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('web.dashboard.index') }}" aria-expanded="false">
+                                        <a class="sidebar-link" href="{{ route('web.dashboard.index') }}"
+                                            aria-expanded="false">
                                             <iconify-icon icon="solar:widget-add-line-duotone"></iconify-icon>
                                             <span class="hide-menu">Dashboard</span>
                                         </a>
@@ -100,14 +101,14 @@
                                         </a>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{route('web.controls.index')}}"
+                                        <a class="sidebar-link" href="{{ route('web.controls.index') }}"
                                             aria-expanded="false">
                                             <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
                                             <span class="hide-menu">SAKLAR</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{route('web.settings.index')}}"
+                                        <a class="sidebar-link" href="{{ route('web.settings.index') }}"
                                             aria-expanded="false">
                                             <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
                                             <span class="hide-menu">PENGATURAN</span>
@@ -117,18 +118,23 @@
                                     <li>
                                         <span class="sidebar-divider lg"></span>
                                     </li>
-                                    <!-- Extra Section -->
-                                    <li class="nav-small-cap">
-                                        <iconify-icon icon="solar:menu-dots-linear"
-                                            class="nav-small-cap-icon fs-4"></iconify-icon>
-                                        <span class="hide-menu">USERS</span>
-                                    </li>
-                                    <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('web.users.index') }}" aria-expanded="false">
-                                            <iconify-icon icon="solar:user-plus-rounded-line-duotone"></iconify-icon>
-                                            <span class="hide-menu">USER LISTS</span>
-                                        </a>
-                                    </li>
+                                    <!-- Extra Section: Only visible to Admins -->
+                                    @if (Auth::check() && Auth::user()->role == 'admin')
+                                        <li class="nav-small-cap">
+                                            <iconify-icon icon="solar:menu-dots-linear"
+                                                class="nav-small-cap-icon fs-4"></iconify-icon>
+                                            <span class="hide-menu">USERS</span>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a class="sidebar-link" href="{{ route('web.users.index') }}"
+                                                aria-expanded="false">
+                                                <iconify-icon
+                                                    icon="solar:user-plus-rounded-line-duotone"></iconify-icon>
+                                                <span class="hide-menu">USER LISTS</span>
+                                            </a>
+                                        </li>
+                                    @endif
+
                                 </ul>
                                 <!-- End Sidebar navigation -->
                         </div>
@@ -159,11 +165,14 @@
                             <a href="https://adminmart.com/product/matdash-free-bootstrap-5-admin-dashboard-template/"
                                 target="_blank" class="btn btn-primary">hello {{ Auth::user()->name }}</a>
                             <li class="nav-item dropdown">
-                                <a class="nav-link" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
-                                    @if(Auth::user()->photo)
-                                        <img src="{{ Storage::url(Auth::user()->photo) }}" alt="" width="35" height="35" class="rounded-circle">
+                                <a class="nav-link" href="javascript:void(0)" id="drop2"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    @if (Auth::user()->photo)
+                                        <img src="{{ Storage::url(Auth::user()->photo) }}" alt=""
+                                            width="35" height="35" class="rounded-circle">
                                     @else
-                                        <img src="../assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
+                                        <img src="../assets/images/profile/user-1.jpg" alt="" width="35"
+                                            height="35" class="rounded-circle">
                                     @endif
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"

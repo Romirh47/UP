@@ -19,6 +19,7 @@
                                     <th scope="col">Foto</th>
                                     <th scope="col">Nama</th>
                                     <th scope="col">Email</th>
+                                    <th scope="col">Role</th>
                                     <th scope="col">Aksi</th>
                                 </tr>
                             </thead>
@@ -36,6 +37,12 @@
                                         </td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>
+                                            @if ($user->role == 'admin')
+                                                <span class="badge bg-primary">Admin</span>
+                                            @else
+                                                <span class="badge bg-secondary">User</span>
+                                            @endif
                                         <td>
                                             <button class="btn btn-sm btn-info detail-btn" data-id="{{ $user->id }}"
                                                 data-bs-toggle="modal" data-bs-target="#detailModal">
@@ -93,7 +100,8 @@
     <!-- Modal tambah pengguna -->
     <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form class="modal-content" id="tambahForm" enctype="multipart/form-data">
+            <form class="modal-content" id="tambahForm" enctype="multipart/form-data" method="POST"
+                action="{{ route('web.users.store') }}">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="tambahModalLabel">Tambah Pengguna</h5>
@@ -116,6 +124,13 @@
                             placeholder="Masukkan Kata Sandi">
                     </div>
                     <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="admin">Admin</option>
+                            <option value="user" selected>User</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="photo" class="form-label">Foto (Opsional)</label>
                         <input type="file" class="form-control" id="photo" name="photo">
                     </div>
@@ -128,10 +143,12 @@
         </div>
     </div>
 
+
     <!-- Modal edit pengguna -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form class="modal-content" id="editForm" enctype="multipart/form-data">
+            <form class="modal-content" id="editForm" enctype="multipart/form-data" method="POST"
+                action="{{ route('web.users.update', '') }}">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
@@ -156,6 +173,13 @@
                             placeholder="Masukkan Kata Sandi Baru">
                     </div>
                     <div class="mb-3">
+                        <label for="edit_role" class="form-label">Role</label>
+                        <select class="form-select" id="edit_role" name="role">
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="edit_photo" class="form-label">Foto (Opsional)</label>
                         <input type="file" class="form-control" id="edit_photo" name="photo">
                         <img id="edit_photo_preview" class="img-thumbnail mt-2" style="max-width: 100px; display: none;">
@@ -169,6 +193,7 @@
         </div>
     </div>
 
+
     <!-- Modal detail pengguna -->
     <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -180,6 +205,7 @@
                 <div class="modal-body">
                     <p><strong>Nama:</strong> <span id="detail_name"></span></p>
                     <p><strong>Email:</strong> <span id="detail_email"></span></p>
+                    <p><strong>Role:</strong> <span id="detail_role"></span></p>
                     <p><strong>Foto:</strong> <br> <img id="detail_photo" src="" alt="Foto Pengguna"
                             class="img-fluid" style="display: none; max-width: 100px;"></p>
                 </div>
@@ -201,7 +227,7 @@
                 var formData = new FormData(this);
                 $.ajax({
                     type: 'POST',
-                    url: '{{ route('api.users.store') }}',
+                    url: '{{ route('web.users.store') }}', // Pastikan route ini benar
                     data: formData,
                     contentType: false,
                     processData: false,
@@ -210,16 +236,21 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Sukses',
-                            text: response.message,
+                            text: response.message || 'Pengguna berhasil ditambahkan.',
                         }).then(() => {
                             location.reload();
                         });
                     },
                     error: function(xhr) {
+                        // Cek jika ada respons dari server
+                        var errorMessage = 'Terjadi kesalahan!';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Terjadi kesalahan!',
+                            text: errorMessage,
                         });
                     }
                 });
@@ -231,10 +262,12 @@
                 let name = $(this).data('name');
                 let email = $(this).data('email');
                 let photo = $(this).data('photo');
+                let role = $(this).data('role');
 
                 $('#edit_id').val(id);
                 $('#edit_name').val(name);
                 $('#edit_email').val(email);
+                $('#edit_role').val(role); // Set value for role
 
                 if (photo) {
                     $('#edit_photo_preview').attr('src', "{{ Storage::url('') }}" + photo).show();
@@ -259,16 +292,20 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Sukses',
-                            text: response.message,
+                            text: response.message || 'Pengguna berhasil diperbarui.',
                         }).then(() => {
                             location.reload();
                         });
                     },
                     error: function(xhr) {
+                        var errorMessage = 'Terjadi kesalahan!';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Terjadi kesalahan!',
+                            text: errorMessage,
                         });
                     }
                 });
@@ -284,7 +321,8 @@
                         $('#detail_name').text(response.user.name);
                         $('#detail_email').text(response.user.email);
                         if (response.user.photo) {
-                            $('#detail_photo').attr('src', "{{ Storage::url('') }}" + response.user.photo).show();
+                            $('#detail_photo').attr('src', "{{ Storage::url('') }}" + response
+                                .user.photo).show();
                         } else {
                             $('#detail_photo').hide();
                         }
@@ -314,24 +352,30 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             type: 'DELETE',
-                            url: '{{ route('api.users.destroy', ':id') }}'.replace(':id', id),
+                            url: '{{ route('api.users.destroy', ':id') }}'.replace(':id',
+                                id),
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             success: function(response) {
                                 Swal.fire(
                                     'Dihapus!',
-                                    response.message,
+                                    response.message ||
+                                    'Pengguna berhasil dihapus.',
                                     'success'
                                 ).then(() => {
                                     location.reload();
                                 });
                             },
                             error: function(xhr) {
+                                var errorMessage = 'Terjadi kesalahan!';
+                                if (xhr.responseJSON && xhr.responseJSON.message) {
+                                    errorMessage = xhr.responseJSON.message;
+                                }
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
-                                    text: xhr.responseJSON.message || 'Terjadi kesalahan!',
+                                    text: errorMessage,
                                 });
                             }
                         });

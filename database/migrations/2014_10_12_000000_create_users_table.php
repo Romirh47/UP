@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('photo')->nullable(); // Menambahkan kolom photo yang dapat bernilai null
+            $table->string('photo')->nullable(); // Kolom photo yang bisa null
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('role', ['admin', 'user'])->default('user'); // Menambahkan kolom role dengan nilai default user
             $table->rememberToken();
             $table->timestamps();
         });
@@ -28,8 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('photo'); // Menghapus kolom photo jika rollback migration
-        });
+        Schema::dropIfExists('users');
     }
 };
