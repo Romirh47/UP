@@ -207,7 +207,8 @@
                     <p><strong>Email:</strong> <span id="detail_email"></span></p>
                     <p><strong>Role:</strong> <span id="detail_role"></span></p>
                     <p><strong>Foto:</strong> <br> <img id="detail_photo" src="" alt="Foto Pengguna"
-                            class="img-fluid" style="display: none; max-width: 100px;"></p>
+                            class="img-fluid" style="display: none; max-width: 300px;"></p>
+                    <!-- Ukuran gambar lebih besar -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -320,6 +321,7 @@
                     success: function(response) {
                         $('#detail_name').text(response.user.name);
                         $('#detail_email').text(response.user.email);
+                        $('#detail_role').text(response.user.role); // Menampilkan role
                         if (response.user.photo) {
                             $('#detail_photo').attr('src', "{{ Storage::url('') }}" + response
                                 .user.photo).show();
@@ -336,6 +338,7 @@
                     }
                 });
             });
+
 
             // Hapus pengguna
             $('.delete-btn').on('click', function() {
