@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\SensorDataController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,13 +26,13 @@ Route::get('/', function () {
     return view('pages.landing.landing');
 })->name('web.landing');
 
-// Rute untuk memuat data dashboard secara asinkron
-Route::middleware('auth')->get('/dashboard/data', [DashboardController::class, 'getData'])->name('dashboard.data');
+// // Rute untuk memuat data dashboard secara asinkron
+// Route::middleware('auth')->get('/dashboard/data', [DashboardController::class, 'getData'])->name('dashboard.data');
 
-// Rute untuk halaman dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('web.dashboard');
+// // Rute untuk halaman dashboard
+// Route::get('/dashboard', [DashboardController::class, 'index'])
+//     ->middleware(['auth', 'verified'])
+//     ->name('web.dashboard');
 
 // Rute untuk memperbarui status aktuator
 Route::middleware('auth')->put('/actuators/{id}/status', [DashboardController::class, 'updateActuatorStatus'])
@@ -99,7 +100,31 @@ Route::middleware('auth')->resource('sensors', SensorController::class)->names([
         'destroy' => 'web.controls.destroy',
     ]);
 
+// routes/web.php
+Route::resource('settings', SettingController::class)->names([
+    'index' => 'web.settings.index',
+    'create' => 'web.settings.create',
+    'store' => 'web.settings.store',
+    'show' => 'web.settings.show',
+    'edit' => 'web.settings.edit',
+    'update' => 'web.settings.update',
+    'destroy' => 'web.settings.destroy',
+]);
+
 // Rute untuk tampilan web data sensor (sensordata)
 Route::middleware('auth')->get('/sensordata', [SensorDataController::class, 'indexWeb'])->name('web.sensordata.index');
 
 require __DIR__.'/auth.php';
+
+// Route::get('actuators/status', [ControlController::class, 'getActuatorsStatus'])->name('actuators.status');
+
+// Rute WEB untuk CRUD data dashboard(dashboard)
+Route::middleware('auth')->resource('dashboard', DashboardController::class)->names([
+    'index' => 'web.dashboard.index',
+    'create' => 'web.dashboard.create',
+    'store' => 'web.dashboard.store',
+    'show' => 'web.dashboard.show',
+    'edit' => 'web.dashboard.edit',
+    'update' => 'web.dashboard.update',
+    'destroy' => 'web.dashboard.destroy',
+]);

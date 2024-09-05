@@ -20,10 +20,8 @@
     <div id="combined-chart" class="chart-container"></div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var categories = @json($categories);
-            var series = @json($series);
-
-            Highcharts.chart('combined-chart', {
+            // Initialize the chart
+            var chart = Highcharts.chart('combined-chart', {
                 chart: {
                     type: 'line',
                     height: 500
@@ -32,17 +30,18 @@
                     text: 'Sensor Data Trends'
                 },
                 xAxis: {
-                    categories: categories,
+                    type: 'datetime', // Change to datetime to handle real-time data
                     title: {
                         text: 'Time'
-                    }
+                    },
+                    tickPixelInterval: 150
                 },
                 yAxis: {
                     title: {
                         text: 'Value'
                     }
                 },
-                series: series,
+                series: @json($series),
                 plotOptions: {
                     line: {
                         marker: {
@@ -51,6 +50,28 @@
                     }
                 }
             });
+
+            // Function to fetch and update chart data
+            function fetchDataAndUpdateChart() {
+                fetch('/api/sensordata')
+                    .then(response => response.json())
+                    .then(data => {
+                        var now = new Date().getTime();
+                        Object.keys(data).forEach(sensorId => {
+                            var sensor = data[sensorId];
+                            var series = chart.series.find(s => s.name === `Sensor ${sensorId}`);
+
+                            if (series) {
+                                // Add new data point
+                                series.addPoint([now, sensor.value], true, false);
+                            }
+                        });
+                    })
+                    .catch(error => console.error('Error fetching sensor data:', error));
+            }
+
+            // Call fetchDataAndUpdateChart every 1000 ms (1 second)
+            setInterval(fetchDataAndUpdateChart, 1000);
         });
     </script>
 </body>

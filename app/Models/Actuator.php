@@ -19,4 +19,9 @@ class Actuator extends Model
     {
         return $this->hasMany(ActuatorValue::class);
     }
+
+    public function settings()
+    {
+        return $this->hasMany(Setting::class);
+    }
 }

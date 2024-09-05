@@ -1,15 +1,5 @@
 
 <div class="container">
-    <!-- Tombol Hidupkan dan Matikan Semua -->
-    {{-- <div class="row mb-3">
-        <div class="col-md-6">
-            <button id="turn-all-on" class="btn btn-success w-100">Hidupkan Semua</button>
-        </div>
-        <div class="col-md-6">
-            <button id="turn-all-off" class="btn btn-danger w-100">Matikan Semua</button>
-        </div>
-    </div> --}}
-
     <div class="row">
         @foreach($actuators as $actuator)
             @php

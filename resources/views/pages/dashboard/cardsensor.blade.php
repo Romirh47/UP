@@ -1,3 +1,5 @@
+
+
  <!-- Card Sensor -->
  <div class="container">
      <div class="row mb-4">
@@ -31,31 +33,3 @@
          @endforeach
      </div>
  </div>
-
- @push('scripts')
-     <script>
-         $(document).ready(function() {
-             function updateSensorData() {
-                 $.ajax({
-                     url: '/api/sensor-values', // Ganti dengan endpoint API yang sesuai
-                     method: 'GET',
-                     success: function(data) {
-                         data.forEach(sensor => {
-                             const sensorCard = $(`#sensor-${sensor.id}`);
-                             if (sensorCard.length) {
-                                 sensorCard.find('.card-title').text(sensor.value.toUpperCase());
-                                 sensorCard.find('.card-text').text(sensor.type.toUpperCase());
-                             }
-                         });
-                     },
-                     error: function(error) {
-                         console.error('Error saat mengambil data sensor:', error);
-                     }
-                 });
-             }
-
-             // Panggil fungsi update setiap 1000 ms (1 detik)
-             setInterval(updateSensorData, 1000);
-         });
-     </script>
- @endpush

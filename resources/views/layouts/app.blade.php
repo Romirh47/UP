@@ -56,7 +56,7 @@
                                         <span class="hide-menu">Home</span>
                                     </li>
                                     <li class="sidebar-item">
-                                        <a class="sidebar-link" href="{{ route('web.dashboard') }}" aria-expanded="false">
+                                        <a class="sidebar-link" href="{{ route('web.dashboard.index') }}" aria-expanded="false">
                                             <iconify-icon icon="solar:widget-add-line-duotone"></iconify-icon>
                                             <span class="hide-menu">Dashboard</span>
                                         </a>
@@ -103,7 +103,14 @@
                                         <a class="sidebar-link" href="{{route('web.controls.index')}}"
                                             aria-expanded="false">
                                             <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
-                                            <span class="hide-menu">CONTROL</span>
+                                            <span class="hide-menu">SAKLAR</span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a class="sidebar-link" href="{{route('web.settings.index')}}"
+                                            aria-expanded="false">
+                                            <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
+                                            <span class="hide-menu">PENGATURAN</span>
                                         </a>
                                     </li>
                                     {{-- <!-- Divider --> --}}
@@ -190,6 +197,7 @@
                     <!-- solar icons -->
                     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
                     @stack('scripts')
+                    @stack('styles')
 </body>
 
 </html>

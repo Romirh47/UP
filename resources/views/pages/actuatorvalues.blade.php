@@ -51,12 +51,10 @@
     $(document).ready(function() {
         // Fungsi untuk memuat data actuator dan pagination
         function loadData(page = 1) {
-            $('#loading').show(); // Tampilkan animasi loading
             $.ajax({
                 url: "{{ route('api.actuator_values.index') }}?page=" + page, // Menggunakan query string untuk paginasi
                 type: 'GET',
                 success: function(response) {
-                    $('#loading').hide(); // Sembunyikan animasi loading
                     let rows = '';
                     if (response.data && Array.isArray(response.data)) {
                         response.data.forEach(function(actuatorValue, index) {
@@ -106,7 +104,6 @@
                     $('#paginationNav').html(pagination); // Perbarui elemen pagination
                 },
                 error: function(xhr) {
-                    $('#loading').hide(); // Sembunyikan animasi loading
                     Swal.fire('Terjadi kesalahan', 'Tidak dapat memuat data actuator.', 'error');
                 }
             });
@@ -114,6 +111,11 @@
 
         // Panggil fungsi loadData saat halaman pertama kali dimuat
         loadData();
+
+        // Interval untuk memuat ulang data setiap 1 detik
+        setInterval(function() {
+            loadData(); // Reload data
+        }, 1000);
 
         // Event delegation untuk pagination
         $('#paginationNav').on('click', '.page-link', function(e) {
@@ -195,3 +197,4 @@
     });
 </script>
 @endpush
+

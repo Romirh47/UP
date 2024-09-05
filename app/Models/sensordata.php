@@ -16,4 +16,9 @@ class SensorData extends Model
     {
         return $this->belongsTo(Sensor::class);
     }
+
+    public function scopeLatestData($query)
+    {
+        return $query->orderBy('created_at', 'desc');
+    }
 }

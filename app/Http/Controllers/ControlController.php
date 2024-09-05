@@ -71,4 +71,5 @@ class ControlController extends Controller
         // Publish pesan
         $client->publish($actuatorTopic, $payload, 1); // QoS Level 1
     }
+
 }

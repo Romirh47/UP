@@ -72,18 +72,12 @@ class SensorDataController extends Controller
         return response()->json(['success' => 'Data sensor berhasil diperbarui.', 'data' => $sensorData]);
     }
 
-    public function destroy($id = null)
+    // Menghapus data sensor melalui API
+    public function destroy($id)
     {
-        if ($id === 'all') {
-            // Hapus semua data sensor
-            SensorData::truncate(); // Menghapus semua data di tabel
-            return response()->json(['success' => 'Semua data berhasil dihapus.']);
-        } else {
-            // Hapus data sensor berdasarkan ID
-            $sensorData = SensorData::findOrFail($id);
-            $sensorData->delete();
-            return response()->json(['success' => 'Data berhasil dihapus.']);
-        }
-    }
+        $sensorData = SensorData::findOrFail($id);
+        $sensorData->delete();
 
+        return response()->json(['success' => 'Data sensor berhasil dihapus.']);
+    }
 }

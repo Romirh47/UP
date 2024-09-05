@@ -78,6 +78,35 @@
             });
         }
 
+        // Fungsi untuk memperbarui semua status aktuator
+        function refreshActuators() {
+            $.ajax({
+                url: "{{ url('actuators') }}", // Ganti dengan URL yang sesuai untuk mendapatkan data aktuator
+                type: 'GET',
+                success: function(response) {
+                    response.actuators.forEach(function(actuator) {
+                        var status = actuator.status; // Pastikan data status sesuai dengan yang diterima
+                        $('#status-' + actuator.id).text(status === 'on' ? 'On' : 'Off');
+                        if (status === 'on') {
+                            $('button[data-id="' + actuator.id + '"][data-action="on"]').addClass('disabled');
+                            $('button[data-id="' + actuator.id + '"][data-action="off"]').removeClass('disabled');
+                        } else {
+                            $('button[data-id="' + actuator.id + '"][data-action="off"]').addClass('disabled');
+                            $('button[data-id="' + actuator.id + '"][data-action="on"]').removeClass('disabled');
+                        }
+                    });
+                },
+                error: function(xhr) {
+                    // Show error alert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat memuat status aktuator.',
+                    });
+                }
+            });
+        }
+
         // Event handler untuk tombol Hidupkan/Mematikan satu aktuator
         $('button[data-action]').on('click', function() {
             var actuatorId = $(this).data('id');
@@ -98,6 +127,10 @@
                 updateActuatorStatus("{{ $actuator->id }}", 'off');
             @endforeach
         });
+
+        // Interval untuk memperbarui status aktuator setiap 1 detik
+        setInterval(refreshActuators, 1000);
     });
 </script>
 @endpush
+

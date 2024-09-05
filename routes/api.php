@@ -5,6 +5,8 @@ use App\Http\Controllers\ActuatorValueController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\SensorDataController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,5 +65,32 @@ Route::apiResource('sensordata', SensorDataController::class)->names([
     'destroy' => 'api.sensordata.destroy',
 ]);
 
-// Route untuk model dashboard
-Route::get('/dashboard/data', [DashboardController::class, 'getData'])->name('dashboard.data');
+// routes/api.php
+Route::resource('settings', SettingController::class)->names([
+    'index' => 'api.settings.index',
+    'store' => 'api.settings.store',
+    'show' => 'api.settings.show',
+    'update' => 'api.settings.update',
+    'destroy' => 'api.settings.destroy',
+]);
+
+// routes api dashboard
+Route::resource('dashboard', DashboardController::class)->names([
+    'index' => 'api.dashboard.index',
+    'store' => 'api.dashboard.store',
+    'show' => 'api.dashboard.show',
+    'update' => 'api.dashboard.update',
+    'destroy' => 'api.dashboard.destroy',
+]);
+
+
+   // Rute untuk CRUD controls
+   Route::resource('controls', ControlController::class)->names([
+    'index' => 'api.controls.index',
+    'create' => 'api.controls.create',
+    'store' => 'api.controls.store',
+    'show' => 'api.controls.show',
+    'edit' => 'api.controls.edit',
+    'update' => 'api.controls.update',
+    'destroy' => 'api.controls.destroy',
+]);
