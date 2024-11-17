@@ -82,7 +82,6 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // Hapus laporan individu
             $('.delete-btn').on('click', function() {
                 let id = $(this).data('id');
                 Swal.fire({
@@ -97,7 +96,11 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             type: 'DELETE',
-                            url: '{{ url('api/reports/:id') }}'.replace(':id', id),
+                            url: '{{ route('api.reports.destroy', ':id') }}'.replace(':id',
+                                id),
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
                             success: function(response) {
                                 Swal.fire(
                                     'Dihapus!',
@@ -108,14 +111,11 @@
                                 });
                             },
                             error: function(xhr) {
-                                var errorMessage = 'Terjadi kesalahan!';
-                                if (xhr.responseJSON && xhr.responseJSON.message) {
-                                    errorMessage = xhr.responseJSON.message;
-                                }
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
-                                    text: errorMessage,
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan!',
                                 });
                             }
                         });
@@ -123,7 +123,6 @@
                 });
             });
 
-            // Hapus semua laporan
             $('#delete-all-btn').on('click', function() {
                 Swal.fire({
                     title: 'Anda yakin?',
@@ -137,7 +136,10 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             type: 'DELETE',
-                            url: '{{ url('api/reports/destroyAll') }}',
+                            url: '{{ route('api.reports.destroyAll') }}',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
                             success: function(response) {
                                 Swal.fire(
                                     'Dihapus!',
@@ -149,14 +151,11 @@
                                 });
                             },
                             error: function(xhr) {
-                                var errorMessage = 'Terjadi kesalahan!';
-                                if (xhr.responseJSON && xhr.responseJSON.message) {
-                                    errorMessage = xhr.responseJSON.message;
-                                }
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
-                                    text: errorMessage,
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan!',
                                 });
                             }
                         });
