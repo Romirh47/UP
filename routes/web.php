@@ -1,14 +1,10 @@
 <?php
 
-use App\Http\Controllers\ActuatorController;
-use App\Http\Controllers\ActuatorValueController;
-use App\Http\Controllers\ControlController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SensorController;
-use App\Http\Controllers\SensorDataController;
-use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
+| routes are loaded by RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
 */
@@ -26,17 +22,11 @@ Route::get('/', function () {
     return view('pages.landing.landing');
 })->name('web.landing');
 
-// // Rute untuk memuat data dashboard secara asinkron
-// Route::middleware('auth')->get('/dashboard/data', [DashboardController::class, 'getData'])->name('dashboard.data');
-
-// // Rute untuk halaman dashboard
-// Route::get('/dashboard', [DashboardController::class, 'index'])
-//     ->middleware(['auth', 'verified'])
-//     ->name('web.dashboard');
+// Rute untuk halaman dashboard
+Route::middleware(['auth', 'verified'])->get('/dashboard', [DashboardController::class, 'index'])->name('web.dashboard');
 
 // Rute untuk memperbarui status aktuator
-Route::middleware('auth')->put('/actuators/{id}/status', [DashboardController::class, 'updateActuatorStatus'])
-    ->name('actuators.updateStatus');
+Route::middleware('auth')->put('/actuators/{id}/status', [DashboardController::class, 'updateActuatorStatus'])->name('actuators.updateStatus');
 
 // Rute lainnya tetap sama
 Route::middleware('auth')->group(function () {
@@ -58,69 +48,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     ]);
 });
 
-// Rute untuk CRUD data aktuator (actuators)
-Route::middleware('auth')->resource('actuators', ActuatorController::class)->names([
-    'index' => 'web.actuators.index',
-    'create' => 'web.actuators.create',
-    'store' => 'web.actuators.store',
-    'show' => 'web.actuators.show',
-    'edit' => 'web.actuators.edit',
-    'update' => 'web.actuators.update',
-    'destroy' => 'web.actuators.destroy',
-]);
-
-// Rute untuk CRUD data nilai aktuator (actuator_values)
-Route::middleware('auth')->resource('actuator-values', ActuatorValueController::class)->names([
-    'index' => 'web.actuator_values.index',
-    'create' => 'web.actuator_values.create',
-    'store' => 'web.actuator_values.store',
-    'show' => 'web.actuator_values.show',
-    'edit' => 'web.actuator_values.edit',
-    'update' => 'web.actuator_values.update',
-    'destroy' => 'web.actuator_values.destroy',
-]);
-
-// Rute untuk CRUD data sensor (sensors)
-Route::middleware('auth')->resource('sensors', SensorController::class)->names([
-    'index' => 'web.sensors.index',
-    'create' => 'web.sensors.create',
-    'store' => 'web.sensors.store',
-    'show' => 'web.sensors.show',
-    'edit' => 'web.sensors.edit',
-    'update' => 'web.sensors.update',
-    'destroy' => 'web.sensors.destroy',
-]);
-
-// Rute untuk CRUD controls
-Route::resource('controls', ControlController::class)->names([
-    'index' => 'web.controls.index',
-    'create' => 'web.controls.create',
-    'store' => 'web.controls.store',
-    'show' => 'web.controls.show',
-    'edit' => 'web.controls.edit',
-    'update' => 'web.controls.update',
-    'destroy' => 'web.controls.destroy',
-]);
-
-// routes/web.php
-Route::resource('settings', SettingController::class)->names([
-    'index' => 'web.settings.index',
-    'create' => 'web.settings.create',
-    'store' => 'web.settings.store',
-    'show' => 'web.settings.show',
-    'edit' => 'web.settings.edit',
-    'update' => 'web.settings.update',
-    'destroy' => 'web.settings.destroy',
-]);
-
-// Rute untuk tampilan web data sensor (sensordata)
-Route::middleware('auth')->get('/sensordata', [SensorDataController::class, 'indexWeb'])->name('web.sensordata.index');
-
-require __DIR__ . '/auth.php';
-
-// Route::get('actuators/status', [ControlController::class, 'getActuatorsStatus'])->name('actuators.status');
-
-// Rute WEB untuk CRUD data dashboard(dashboard)
+// Rute untuk CRUD DASHBOARD
 Route::middleware('auth')->resource('dashboard', DashboardController::class)->names([
     'index' => 'web.dashboard.index',
     'create' => 'web.dashboard.create',
@@ -131,4 +59,16 @@ Route::middleware('auth')->resource('dashboard', DashboardController::class)->na
     'destroy' => 'web.dashboard.destroy',
 ]);
 
+// Rute untuk CRUD laporan reports
+Route::middleware('auth')->resource('reports', ReportController::class)->names([
+    'index' => 'web.reports.index',
+    'create' => 'web.reports.create',
+    'store' => 'web.reports.store',
+    'show' => 'web.reports.show',
+    'edit' => 'web.reports.edit',
+    'update' => 'web.reports.update',
+    'destroy' => 'web.reports.destroy',
+]);
 
+
+require __DIR__ . '/auth.php';

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use App\Events\ReportChanged;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,13 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
+// Channel untuk pengguna berdasarkan ID
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+    return (int) $user->id === (int) $id; // Memastikan pengguna hanya bisa mendengarkan channel mereka sendiri
+});
+
+// Channel untuk laporan
+
+Broadcast::channel('reports-channel', function ($user) {
+    return true; // Membolehkan semua pengguna untuk mendengarkan channel ini, Anda bisa menambahkan logika otorisasi di sini jika diperlukan
 });

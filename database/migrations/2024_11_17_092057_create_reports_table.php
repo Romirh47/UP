@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sensor_data', function (Blueprint $table) {
+        Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sensor_id')->constrained('sensors')->onDelete('cascade');
-            $table->float('value');
-            $table->timestamps();
+            $table->string('jenis_kejadian');  // Kolom untuk jenis kejadian
+            $table->string('foto_kejadian')->nullable();  // Kolom untuk foto kejadian, nullable jika tidak ada foto
+            $table->timestamps();  // Kolom untuk created_at dan updated_at
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sensor_data');
+        Schema::dropIfExists('reports');
     }
 };
