@@ -46,6 +46,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 
+
 // Rute untuk CRUD laporan reports
 Route::middleware('auth')->resource('reports', ReportController::class)->names([
     'index' => 'web.reports.index',

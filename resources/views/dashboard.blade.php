@@ -6,8 +6,8 @@
     <div class="col-md-3">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title" style="color: #28a745; text-align: center;">Total Laporan</h5>
-                <p class="card-text" style="color: rgb(0, 0, 0); font-weight: bold; text-align: center;">{{ $totalReports }}</p>
+                <h3 class="card-title" style="color: #28a745; text-align: center;">Total Laporan</h3>
+                <h3 class="card-text" id="totalReports" style="color: rgb(0, 0, 0); font-weight: bold; text-align: center;">Loading...</h3>
             </div>
         </div>
     </div>
@@ -16,8 +16,8 @@
     <div class="col-md-3">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title" style="color: #28a745; text-align: center;">Total Pengguna</h5>
-                <p class="card-text" style="color: rgb(0, 0, 0); font-weight: bold; text-align: center;">{{ $totalAdmins + $totalUsers }}</p>
+                <h3 class="card-title" style="color: #28a745; text-align: center;">Total Pengguna</h3>
+                <h3 class="card-text" id="totalUsers" style="color: rgb(0, 0, 0); font-weight: bold; text-align: center;">Loading...</h3>
             </div>
         </div>
     </div>
@@ -28,13 +28,13 @@
             <div class="card-body">
                 <h5 class="card-title" style="color: #28a745;">Distribusi Role Pengguna</h5>
                 <div class="progress mb-3">
-                    <div class="progress-bar" role="progressbar" style="width: {{ $totalAdmins / ($totalAdmins + $totalUsers) * 100 }}%;" aria-valuenow="{{ $totalAdmins }}" aria-valuemin="0" aria-valuemax="{{ $totalAdmins + $totalUsers }}">
-                        {{ round($totalAdmins / ($totalAdmins + $totalUsers) * 100, 2) }}% - {{ $totalAdmins }} Admin
+                    <div class="progress-bar" id="adminProgress" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        0% - 0 Admin
                     </div>
                 </div>
                 <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: {{ $totalUsers / ($totalAdmins + $totalUsers) * 100 }}%;" aria-valuenow="{{ $totalUsers }}" aria-valuemin="0" aria-valuemax="{{ $totalAdmins + $totalUsers }}">
-                        {{ round($totalUsers / ($totalAdmins + $totalUsers) * 100, 2) }}% - {{ $totalUsers }} User
+                    <div class="progress-bar" id="userProgress" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        0% - 0 User
                     </div>
                 </div>
             </div>
@@ -49,9 +49,7 @@
                 <div style="width: 300px; margin: auto;">
                     <canvas id="jenisKejadianChart"></canvas>
                 </div>
-                @if(count($chartData) === 0)
-                    <p class="text-center mt-3">Data tidak tersedia</p>
-                @endif
+                <p id="chartMessage" class="text-center mt-3">Data sedang dimuat...</p>
             </div>
         </div>
     </div>
@@ -62,28 +60,8 @@
             <div class="card-body">
                 <h5 class="card-title" style="color: #28a745;">Laporan Terbaru</h5>
                 <div id="carouselReports" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        @forelse($latestReports as $index => $report)
-                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                @if($report->foto_kejadian)
-                                    <img src="{{ asset('storage/' . $report->foto_kejadian) }}" class="d-block w-100" alt="Foto Kejadian">
-                                @else
-                                    <div class="text-center">
-                                        <p>Belum ada data</p>
-                                    </div>
-                                @endif
-                                <div class="carousel-caption d-none d-md-block">
-                                    <strong>{{ $report->jenis_kejadian }}</strong><br>
-                                    <span>{{ $report->created_at->format('d M Y H:i') }}</span>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="carousel-item active">
-                                <div class="text-center">
-                                    <p>Belum ada laporan terbaru</p>
-                                </div>
-                            </div>
-                        @endforelse
+                    <div class="carousel-inner" id="carouselInner">
+                        <!-- Laporan akan dimuat disini -->
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselReports" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -98,41 +76,97 @@
         </div>
     </div>
 </div>
+@endsection
 
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-<script>
-    // Prepare data for Donut Chart (Jenis Kejadian)
-    const chartData = @json($chartData);
-    const donutLabels = chartData.length ? chartData.map(item => item.jenis_kejadian) : ['Tidak Ada Data'];
-    const donutData = chartData.length ? chartData.map(item => item.count) : [0];
 
-    const jenisCtx = document.getElementById('jenisKejadianChart').getContext('2d');
-    new Chart(jenisCtx, {
-        type: 'doughnut',
-        data: {
-            labels: donutLabels,
-            datasets: [{
-                data: donutData,
-                backgroundColor: ['#5733FF', '#33FFBD', '#FF57A1', '#FFBD33', '#3357FF'],
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'bottom' },
-                datalabels: {
-                    color: '#fff',
-                    font: { weight: 'bold', size: 14 },
-                    formatter: (value, ctx) => {
-                        let total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                        return ((value / total) * 100).toFixed(2) + '%';
+<script>
+    function loadData() {
+        $.ajax({
+            url: "{{ route('api.dashboard.index') }}",
+            method: "GET",
+            success: function (data) {
+                // Update total laporan
+                $('#totalReports').text(data.totalReports);
+                $('#totalUsers').text(data.totalAdmins + data.totalUsers);
+
+                // Update Progress Bars
+                let totalUsers = data.totalAdmins + data.totalUsers;
+                $('#adminProgress').css('width', (data.totalAdmins / totalUsers * 100) + '%')
+                    .text(`${(data.totalAdmins / totalUsers * 100).toFixed(2)}% - ${data.totalAdmins} Admin`);
+                $('#userProgress').css('width', (data.totalUsers / totalUsers * 100) + '%')
+                    .text(`${(data.totalUsers / totalUsers * 100).toFixed(2)}% - ${data.totalUsers} User`);
+
+                // Memuat Chart (Jenis Kejadian)
+                const chartLabels = data.chartData.map(item => item.jenis_kejadian);
+                const chartData = data.chartData.map(item => item.count);
+
+                const ctx = document.getElementById('jenisKejadianChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            data: chartData,
+                            backgroundColor: ['#5733FF', '#33FFBD', '#FF57A1', '#FFBD33', '#3357FF'],
+                        }]
                     },
-                    anchor: 'center',
-                    align: 'center'
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            datalabels: {
+                                color: '#fff',
+                                font: { weight: 'bold', size: 14 },
+                                formatter: (value, ctx) => {
+                                    let total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    return ((value / total) * 100).toFixed(2) + '%';
+                                },
+                                anchor: 'center',
+                                align: 'center'
+                            }
+                        }
+                    }
+                });
+
+                // Memuat laporan terbaru
+                const latestReports = data.latestReports;
+                if (latestReports.length > 0) {
+                    let carouselItems = '';
+                    latestReports.forEach((report, index) => {
+                        carouselItems += `
+                            <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                                <img src="${report.foto_kejadian ? '/storage/' + report.foto_kejadian : '#'}" class="d-block w-100" alt="Foto Kejadian">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>${report.jenis_kejadian}</h5>
+                                    <p>${new Date(report.created_at).toLocaleString()}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    $('#carouselInner').html(carouselItems);
+                } else {
+                    $('#carouselInner').html('<div class="carousel-item active"><div class="text-center"><p>Belum ada laporan terbaru</p></div></div>');
                 }
+
+                // Menghilangkan pesan loading untuk chart
+                $('#chartMessage').text('');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error loading data: ', error);
+                alert('Gagal memuat data.');
             }
-        }
+        });
+    }
+
+    $(document).ready(function () {
+        // Memuat data pertama kali
+        loadData();
+
+        // Memuat data setiap 5 detik
+        setInterval(loadData, 3000);
     });
 </script>
-@endsection
+@endpush

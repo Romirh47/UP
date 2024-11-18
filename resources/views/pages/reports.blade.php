@@ -8,12 +8,12 @@
                     <h2 class="card-title">Data Laporan</h2>
 
                     <!-- Tombol untuk menghapus semua data hanya jika admin -->
-                    @if(auth()->user()->role === 'admin')
+                    {{-- @if (auth()->user()->role === 'admin')
                         <div class="d-flex justify-content-between mb-3">
+                            <!-- Tombol untuk menghapus semua laporan -->
                             <button id="deleteAllBtn" class="btn btn-danger">Delete All</button>
                         </div>
-                    @endif
-
+                    @endif --}}
                     <div class="table-responsive">
                         <table class="table table-striped" id="reportsTable">
                             <thead>
@@ -24,7 +24,7 @@
                                     <th scope="col">Dibuat</th>
 
                                     <!-- Tampilkan kolom Aksi hanya jika admin -->
-                                    @if(auth()->user()->role === 'admin')
+                                    @if (auth()->user()->role === 'admin')
                                         <th scope="col">Aksi</th>
                                     @endif
                                 </tr>
@@ -72,25 +72,25 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            let isFirstLoad = true; // Flag to check if it's the first load
+            let isFirstLoad = true; // Flag untuk mengecek apakah ini load pertama
 
             // Fungsi untuk memuat data laporan dan pagination
             function loadData(page = 1) {
-                // Tampilkan loading animation hanya pada load pertama
+                // Tampilkan animasi loading hanya saat load pertama
                 if (isFirstLoad) {
                     $('#loading').show();
                 }
 
                 $.ajax({
-                    url: "{{ route('api.reports.index') }}?page=" + page, // Menyesuaikan dengan route yang benar
+                    url: "{{ route('api.reports.index') }}?page=" + page, // Sesuaikan dengan route yang benar
                     type: 'GET',
                     success: function(response) {
                         console.log("Response Data:", response); // Debugging: cek data respons
 
-                        // Set isFirstLoad to false after first data load
+                        // Set isFirstLoad ke false setelah load pertama
                         isFirstLoad = false;
 
-                        // Periksa jika response.data ada dan memiliki panjang lebih dari 0
+                        // Periksa apakah response.data ada dan memiliki panjang lebih dari 0
                         if (response.success && Array.isArray(response.data.data) && response.data.data.length > 0) {
                             let rows = '';
                             response.data.data.forEach(function(data, index) {
@@ -109,7 +109,7 @@
                                     <td>${data.jenis_kejadian}</td>
                                     <td>${formatDate(data.created_at)}</td>
                                     <!-- Tampilkan kolom aksi hanya jika admin -->
-                                    @if(auth()->user()->role === 'admin')
+                                    @if (auth()->user()->role === 'admin')
                                         <td>${deleteButton}</td>
                                     @endif
                                 </tr>`;
@@ -147,7 +147,7 @@
                             $('#totalData').text('Total Data: 0');
                         }
 
-                        // Sembunyikan loading animation setelah data dimuat
+                        // Sembunyikan animasi loading setelah data dimuat
                         if (isFirstLoad === false) {
                             $('#loading').hide();
                         }
@@ -155,7 +155,7 @@
                     error: function(xhr, status, error) {
                         console.error("AJAX Error:", error); // Debugging: cek error
                         Swal.fire('Terjadi kesalahan', 'Tidak dapat memuat data laporan.', 'error');
-                        $('#loading').hide(); // Sembunyikan loading animation
+                        $('#loading').hide(); // Sembunyikan animasi loading
                     }
                 });
             }
@@ -191,6 +191,36 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             url: `{{ route('api.reports.destroy', '') }}/${id}`,
+                            type: 'DELETE',
+                            success: function(response) {
+                                Swal.fire('Berhasil', response.message, 'success').then(function() {
+                                    loadData(); // Reload data setelah berhasil menghapus
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Event handler untuk tombol delete all
+            $('#deleteAllBtn').click(function() {
+                Swal.fire({
+                    title: 'Konfirmasi Hapus Semua',
+                    text: 'Apakah Anda yakin ingin menghapus semua laporan?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus Semua!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Kirim permintaan DELETE untuk menghapus semua data
+                        $.ajax({
+                            url: "{{ route('api.reports.deleteAll') }}", // Gunakan route API yang benar
                             type: 'DELETE',
                             success: function(response) {
                                 Swal.fire('Berhasil', response.message, 'success').then(function() {

@@ -132,4 +132,23 @@ class UsersController extends Controller
             'data' => $roleCounts,
         ], 200);
     }
+    // Method untuk menghapus semua pengguna
+    public function deleteAll(Request $request)
+    {
+        try {
+            // Menghapus semua pengguna
+            User::query()->delete();
+
+            // Mengembalikan respon sukses
+            return response()->json([
+                'message' => 'Semua pengguna berhasil dihapus.',
+            ], 200);
+        } catch (\Exception $e) {
+            // Jika terjadi kesalahan, mengembalikan respon error
+            return response()->json([
+                'message' => 'Terjadi kesalahan saat menghapus semua pengguna.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

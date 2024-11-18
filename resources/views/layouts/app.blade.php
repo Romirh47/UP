@@ -8,6 +8,46 @@
     <title>IOT PANEL</title>
     <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="../assets/css/styles.min.css" />
+    <style>
+        /* Add a semi-transparent background to the caption */
+        .carousel-caption {
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent black */
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        /* Ensure the caption text stands out with white text */
+        .carousel-caption h5,
+        .carousel-caption p {
+            color: #fff;
+            /* White text for better contrast */
+        }
+
+        /* Style for the carousel control buttons */
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: #28a745;
+            /* Green background for the arrows */
+            border-radius: 50%;
+        }
+
+        /* Make sure the controls are visible */
+        .carousel-control-prev,
+        .carousel-control-next {
+            font-size: 1.5rem;
+            /* Increase the size of the control icons */
+        }
+
+        /* Optional: Adjust controls for better visibility and positioning */
+        .carousel-control-prev,
+        .carousel-control-next {
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            /* Ensure the controls appear above the image */
+        }
+    </style>
 </head>
 
 
@@ -30,31 +70,26 @@
                     <ul id="sidebarnav">
                         <!-- Home Section -->
                         <li class="nav-small-cap">
-                            <iconify-icon icon="solar:menu-dots-linear"
-                                class="nav-small-cap-icon fs-4"></iconify-icon>
+                            <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"></iconify-icon>
                             <span class="hide-menu">Menu</span>
                         </li>
                         <!-- Dashboard, Reports, and User Management Section -->
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="{{ route('web.dashboard.index') }}"
-                                aria-expanded="false">
+                            <a class="sidebar-link" href="{{ route('web.dashboard.index') }}" aria-expanded="false">
                                 <iconify-icon icon="solar:widget-add-line-duotone"></iconify-icon>
                                 <span class="hide-menu">Dashboard</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="{{ route('web.reports.index') }}"
-                                aria-expanded="false">
+                            <a class="sidebar-link" href="{{ route('web.reports.index') }}" aria-expanded="false">
                                 <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
                                 <span class="hide-menu">Reports</span>
                             </a>
                         </li>
                         @if (Auth::check() && Auth::user()->role == 'admin')
                             <li class="sidebar-item">
-                                <a class="sidebar-link" href="{{ route('web.users.index') }}"
-                                    aria-expanded="false">
-                                    <iconify-icon
-                                        icon="solar:user-plus-rounded-line-duotone"></iconify-icon>
+                                <a class="sidebar-link" href="{{ route('web.users.index') }}" aria-expanded="false">
+                                    <iconify-icon icon="solar:user-plus-rounded-line-duotone"></iconify-icon>
                                     <span class="hide-menu">User Management</span>
                                 </a>
                             </li>
@@ -81,13 +116,14 @@
                     <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
                             <a href="https://adminmart.com/product/matdash-free-bootstrap-5-admin-dashboard-template/"
-                                target="_blank" class="btn btn-primary">hello {{ Auth::check() ? Auth::user()->name : 'Guest' }}</a>
+                                target="_blank" class="btn btn-primary">hello
+                                {{ Auth::check() ? Auth::user()->name : 'Guest' }}</a>
                             <li class="nav-item dropdown">
-                                <a class="nav-link" href="javascript:void(0)" id="drop2"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
                                     @if (Auth::check() && Auth::user()->photo)
-                                        <img src="{{ Storage::url(Auth::user()->photo) }}" alt=""
-                                            width="35" height="35" class="rounded-circle">
+                                        <img src="{{ Storage::url(Auth::user()->photo) }}" alt="" width="35"
+                                            height="35" class="rounded-circle">
                                     @else
                                         <img src="../assets/images/profile/user-1.jpg" alt="" width="35"
                                             height="35" class="rounded-circle">

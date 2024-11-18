@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\DashboardApiController;
-use App\Http\Controllers\UsersController;
 use App\Http\Controllers\Api\ReportApiController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 // Route API untuk Dashboard
@@ -17,6 +17,7 @@ Route::apiResource('users', UsersController::class)->names([
     'destroy' => 'api.users.destroy',
 ]);
 
+// Route untuk model reports
 Route::apiResource('reports', ReportApiController::class)->names([
     'index' => 'api.reports.index',
     'store' => 'api.reports.store',
@@ -26,5 +27,4 @@ Route::apiResource('reports', ReportApiController::class)->names([
 ]);
 
 // Route semua laporan
-// Route::delete('reports/destroyAll', [ReportApiController::class, 'destroyAll'])->name('api.reports.destroyAll');
-
+Route::delete('/reports/deleteAll', [ReportApiController::class, 'deleteAll'])->name('api.reports.deleteAll');
