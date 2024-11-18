@@ -19,7 +19,7 @@ class ReportApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $reports->items(), // Menyertakan data laporan
+            'data' => $reports, // Kirim data lengkap, bukan hanya items
             'pagination' => [
                 'total' => $reports->total(),
                 'per_page' => $reports->perPage(),
@@ -102,7 +102,13 @@ class ReportApiController extends Controller
 
         // Perbaikan pada pengecekan path file
         if ($report->foto_kejadian && Storage::exists('public/' . $report->foto_kejadian)) {
-            Storage::delete('public/' . $report->foto_kejadian);
+            $deleted = Storage::delete('public/' . $report->foto_kejadian);
+            if (!$deleted) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Foto kejadian gagal dihapus',
+                ], 500);
+            }
         }
 
         $report->delete();
@@ -124,7 +130,13 @@ class ReportApiController extends Controller
 
             foreach ($reports as $report) {
                 if ($report->foto_kejadian && Storage::exists('public/' . $report->foto_kejadian)) {
-                    Storage::delete('public/' . $report->foto_kejadian);
+                    $deleted = Storage::delete('public/' . $report->foto_kejadian);
+                    if (!$deleted) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Beberapa foto kejadian gagal dihapus',
+                        ], 500);
+                    }
                 }
             }
 

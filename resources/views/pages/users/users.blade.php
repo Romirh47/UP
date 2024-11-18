@@ -30,7 +30,8 @@
                                         <td>
                                             @if ($user->photo)
                                                 <img src="{{ Storage::url($user->photo) }}" alt="Foto Pengguna"
-                                                    class="img-thumbnail" style="max-width: 100px;">
+                                                    class="img-thumbnail photo-clickable" style="max-width: 100px;"
+                                                    data-photo="{{ Storage::url($user->photo) }}">
                                             @else
                                                 Tidak Ada Foto
                                             @endif
@@ -216,6 +217,20 @@
             </div>
         </div>
     </div>
+    <!-- Modal foto -->
+    <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="photoModalLabel">Foto Pengguna</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="photoModalImg" src="" alt="Foto Pengguna" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -384,6 +399,12 @@
                         });
                     }
                 });
+            });
+            // Saat gambar diklik
+            $('.photo-clickable').on('click', function() {
+                const photoUrl = $(this).data('photo');
+                $('#photoModalImg').attr('src', photoUrl);
+                $('#photoModal').modal('show');
             });
         });
     </script>

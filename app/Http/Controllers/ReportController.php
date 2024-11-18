@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use App\Models\Report;
@@ -7,67 +8,26 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    // Menampilkan laporan dengan tampilan web
     public function index()
     {
-        // Mengambil laporan dan menampilkan 10 per halaman
-        $reports = Report::orderBy('created_at', 'desc')->paginate(10);
+        // Mengambil data laporan
+        $reports = Report::all();  // Mengambil semua laporan
+
+        // Mengirimkan data laporan ke view
         return view('pages.reports', compact('reports'));
     }
 
-    public function show($id)
+    // Menampilkan halaman laporan tertentu
+    public function show(Report $report)
     {
-        // Menampilkan detail laporan berdasarkan ID
-        $report = Report::find($id);
-
-        if (!$report) {
-            return redirect()->route('web.reports.index')->with('error', 'Report not found');
-        }
-
-        return view('reports.show', compact('report'));
+        return view('reports.show', compact('report'));  // Pastikan yang dikirim 'report' bukan 'reports'
     }
 
-    public function store(Request $request)
+    // Menghapus laporan
+    public function destroy(Report $report)
     {
-        // Validasi input
-        $validatedData = $request->validate([
-            'jenis_kejadian' => 'required|string|max:255',
-            'foto_kejadian' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        // Menangani upload foto kejadian
-        $fotoKejadianPath = null;
-        if ($request->hasFile('foto_kejadian')) {
-            $fotoKejadianName = time() . '.' . $request->foto_kejadian->extension();
-            $request->foto_kejadian->move(public_path('storage/foto_kejadian'), $fotoKejadianName);
-            $fotoKejadianPath = 'storage/foto_kejadian/' . $fotoKejadianName;
-        }
-
-        // Menyimpan data laporan
-        $report = Report::create([
-            'jenis_kejadian' => $validatedData['jenis_kejadian'],
-            'foto_kejadian' => $fotoKejadianPath,
-        ]);
-
-        return redirect()->route('web.reports.index')->with('success', 'Laporan berhasil disimpan!');
-    }
-
-    public function destroy($id)
-    {
-        // Menghapus laporan berdasarkan ID
-        $report = Report::find($id);
-
-        if (!$report) {
-            return redirect()->route('web.reports.index')->with('error', 'Report not found');
-        }
-
-        // Hapus file foto kejadian jika ada
-        if ($report->foto_kejadian && file_exists(public_path($report->foto_kejadian))) {
-            unlink(public_path($report->foto_kejadian));
-        }
-
-        // Hapus laporan dari database
         $report->delete();
-
-        return redirect()->route('web.reports.index')->with('success', 'Laporan berhasil dihapus!');
+        return redirect()->route('web.reports.index')->with('success', 'Laporan berhasil dihapus.');
     }
 }

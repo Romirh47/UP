@@ -27,7 +27,11 @@
                 </td>
                 <td>
                     <button class="btn btn-warning edit-report" data-id="{{ $report->id }}" data-incident="{{ $report->incident_type }}" data-snapshot="{{ asset('storage/' . $report->snapshot_path) }}">Edit</button>
-                    <button class="btn btn-danger delete-report" data-id="{{ $report->id }}">Hapus</button>
+
+                    <!-- Menampilkan tombol Hapus hanya untuk Admin -->
+                    @if(auth()->user() && auth()->user()->role === 'admin')
+                        <button class="btn btn-danger delete-report" data-id="{{ $report->id }}">Hapus</button>
+                    @endif
                 </td>
             </tr>
             @endforeach
@@ -120,7 +124,9 @@
                             <td><img src="/storage/${response.snapshot_path}" alt="Snapshot" width="100"></td>
                             <td>
                                 <button class="btn btn-warning edit-report" data-id="${response.id}" data-incident="${response.incident_type}" data-snapshot="/storage/${response.snapshot_path}">Edit</button>
-                                <button class="btn btn-danger delete-report" data-id="${response.id}">Hapus</button>
+                                @if(auth()->user() && auth()->user()->role === 'admin')
+                                    <button class="btn btn-danger delete-report" data-id="${response.id}">Hapus</button>
+                                @endif
                             </td>
                         </tr>
                     `);
