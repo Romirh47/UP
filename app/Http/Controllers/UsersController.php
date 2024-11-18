@@ -21,7 +21,6 @@ class UsersController extends Controller
         return view('pages.users.users', compact('users'));
     }
 
-
     // Metode untuk menambahkan pengguna baru
     public function store(Request $request)
     {
@@ -48,8 +47,6 @@ class UsersController extends Controller
 
         return response()->json(['message' => 'Pengguna berhasil dibuat', 'user' => $user], 201);
     }
-
-
 
     // Metode untuk menampilkan detail pengguna
     public function show($id)
@@ -118,5 +115,21 @@ class UsersController extends Controller
         $user->delete();
 
         return response()->json(['message' => 'Pengguna berhasil dihapus'], 200);
+    }
+
+    /**
+     * Menghitung jumlah pengguna berdasarkan role.
+     * Metode ini dapat dipanggil untuk keperluan dashboard.
+     */
+    public function getRoleCounts()
+    {
+        $roleCounts = User::selectRaw('role, count(*) as count')
+            ->groupBy('role')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $roleCounts,
+        ], 200);
     }
 }

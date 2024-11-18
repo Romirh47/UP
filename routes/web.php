@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\BarangController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UsersController;
@@ -23,12 +22,10 @@ Route::get('/', function () {
 })->name('web.landing');
 
 // Rute untuk halaman dashboard
-Route::middleware(['auth', 'verified'])->get('/dashboard', [DashboardController::class, 'index'])->name('web.dashboard');
+Route::middleware(['auth', 'verified'])->get('/dashboard', [DashboardController::class, 'index'])->name('web.dashboard.index');
 
-// Rute untuk memperbarui status aktuator
-Route::middleware('auth')->put('/actuators/{id}/status', [DashboardController::class, 'updateActuatorStatus'])->name('actuators.updateStatus');
 
-// Rute lainnya tetap sama
+// Rute profile
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('web.profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('web.profile.update');
@@ -48,16 +45,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     ]);
 });
 
-// Rute untuk CRUD DASHBOARD
-Route::middleware('auth')->resource('dashboard', DashboardController::class)->names([
-    'index' => 'web.dashboard.index',
-    'create' => 'web.dashboard.create',
-    'store' => 'web.dashboard.store',
-    'show' => 'web.dashboard.show',
-    'edit' => 'web.dashboard.edit',
-    'update' => 'web.dashboard.update',
-    'destroy' => 'web.dashboard.destroy',
-]);
 
 // Rute untuk CRUD laporan reports
 Route::middleware('auth')->resource('reports', ReportController::class)->names([

@@ -19,7 +19,15 @@ class ReportApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $reports,
+            'data' => $reports->items(), // Menyertakan data laporan
+            'pagination' => [
+                'total' => $reports->total(),
+                'per_page' => $reports->perPage(),
+                'current_page' => $reports->currentPage(),
+                'last_page' => $reports->lastPage(),
+                'next_page_url' => $reports->nextPageUrl(),
+                'prev_page_url' => $reports->previousPageUrl(),
+            ],
         ], 200);
     }
 
@@ -104,20 +112,33 @@ class ReportApiController extends Controller
             'message' => 'Laporan berhasil dihapus!',
         ], 200);
     }
+
+    /**
+     * Menghapus semua laporan.
+     */
     public function destroyAll(): JsonResponse
     {
         try {
-            // Menghapus semua entri di tabel reports
-            Report::truncate();
+            // Menghapus semua laporan
+            $reports = Report::all();
+
+            foreach ($reports as $report) {
+                if ($report->foto_kejadian && Storage::exists('public/' . $report->foto_kejadian)) {
+                    Storage::delete('public/' . $report->foto_kejadian);
+                }
+            }
+
+            // Truncate tabel laporan setelah menghapus foto kejadian
+            Report::query()->delete(); // Menghapus semua data laporan tanpa men-truncate ID
 
             return response()->json([
                 'success' => true,
-                'message' => 'Semua laporan berhasil dihapus.',
-            ], 200);
+                'message' => 'Semua laporan berhasil dihapus!',
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat menghapus semua laporan.',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ], 500);
         }
     }

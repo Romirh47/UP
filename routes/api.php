@@ -1,22 +1,12 @@
 <?php
 
-use App\Http\Controllers\BarangController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Api\DashboardApiController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\Api\ReportApiController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-// API Routes
-|--------------------------------------------------------------------------
-// Di sini Anda dapat mendaftarkan route API untuk aplikasi Anda.
-// Route ini akan dimuat oleh RouteServiceProvider dalam group yang
-| berisi middleware "api".
-*/
-
-// Route untuk model dashboard
-Route::get('/dashboard', [DashboardController::class, 'getData'])->name('api.dashboard.index');
+// Route API untuk Dashboard
+Route::get('/dashboard', [DashboardApiController::class, 'dashboardData'])->name('api.dashboard.index');
 
 // Route untuk model users
 Route::apiResource('users', UsersController::class)->names([
@@ -36,5 +26,5 @@ Route::apiResource('reports', ReportApiController::class)->names([
 ]);
 
 // Route semua laporan
-Route::delete('reports/destroyAll', [ReportApiController::class, 'destroyAll'])->name('api.reports.destroyAll');
+// Route::delete('reports/destroyAll', [ReportApiController::class, 'destroyAll'])->name('api.reports.destroyAll');
 
