@@ -7,13 +7,19 @@
                 <div class="card-body">
                     <h2 class="card-title">Data Laporan</h2>
 
+                    <!-- Tambahkan elemen untuk menampilkan total data -->
+                    <div class="mb-3">
+                        <span id="totalData">0</span>
+                    </div>
+
                     <!-- Tombol untuk menghapus semua data hanya jika admin -->
-                    {{-- @if (auth()->user()->role === 'admin')
+                    @if (auth()->user()->role === 'admin')
                         <div class="d-flex justify-content-between mb-3">
                             <!-- Tombol untuk menghapus semua laporan -->
                             <button id="deleteAllBtn" class="btn btn-danger">Delete All</button>
                         </div>
-                    @endif --}}
+                    @endif
+
                     <div class="table-responsive">
                         <table class="table table-striped" id="reportsTable">
                             <thead>
@@ -82,7 +88,8 @@
                 }
 
                 $.ajax({
-                    url: "{{ route('api.reports.index') }}?page=" + page, // Sesuaikan dengan route yang benar
+                    url: "{{ route('api.reports.index') }}?page=" +
+                        page, // Sesuaikan dengan route yang benar
                     type: 'GET',
                     success: function(response) {
                         console.log("Response Data:", response); // Debugging: cek data respons
@@ -91,14 +98,16 @@
                         isFirstLoad = false;
 
                         // Periksa apakah response.data ada dan memiliki panjang lebih dari 0
-                        if (response.success && Array.isArray(response.data.data) && response.data.data.length > 0) {
+                        if (response.success && Array.isArray(response.data.data) && response.data.data
+                            .length > 0) {
                             let rows = '';
                             response.data.data.forEach(function(data, index) {
                                 // Memeriksa apakah user yang login adalah admin
                                 const isAdmin = @json(auth()->user()->role === 'admin');
                                 let deleteButton = '';
                                 if (isAdmin) {
-                                    deleteButton = `<button class="btn btn-sm btn-danger delete-btn" data-id="${data.id}">Delete</button>`;
+                                    deleteButton =
+                                        `<button class="btn btn-sm btn-danger delete-btn" data-id="${data.id}">Delete</button>`;
                                 }
 
                                 rows += `<tr>
@@ -115,35 +124,43 @@
                                 </tr>`;
                             });
                             $('#reportsTable tbody').html(rows);
-                            $('#totalData').text('Total Data: ' + response.data.total); // Update total data
+                            $('#totalData').text('Total Data: ' + response.data
+                                .total); // Update total data
 
                             // Pagination
                             let pagination = '';
                             pagination += `<ul class="pagination">`;
                             if (!response.data.prev_page_url) {
-                                pagination += `<li class="page-item disabled"><span class="page-link">Previous</span></li>`;
+                                pagination +=
+                                    `<li class="page-item disabled"><span class="page-link">Previous</span></li>`;
                             } else {
-                                pagination += `<li class="page-item"><a class="page-link" href="#" data-page="${response.data.current_page - 1}">Previous</a></li>`;
+                                pagination +=
+                                    `<li class="page-item"><a class="page-link" href="#" data-page="${response.data.current_page - 1}">Previous</a></li>`;
                             }
 
                             for (let i = 1; i <= response.data.last_page; i++) {
                                 if (i === response.data.current_page) {
-                                    pagination += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
+                                    pagination +=
+                                        `<li class="page-item active"><span class="page-link">${i}</span></li>`;
                                 } else {
-                                    pagination += `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                                    pagination +=
+                                        `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
                                 }
                             }
 
                             if (!response.data.next_page_url) {
-                                pagination += `<li class="page-item disabled"><span class="page-link">Next</span></li>`;
+                                pagination +=
+                                    `<li class="page-item disabled"><span class="page-link">Next</span></li>`;
                             } else {
-                                pagination += `<li class="page-item"><a class="page-link" href="#" data-page="${response.data.current_page + 1}">Next</a></li>`;
+                                pagination +=
+                                    `<li class="page-item"><a class="page-link" href="#" data-page="${response.data.current_page + 1}">Next</a></li>`;
                             }
                             pagination += `</ul>`;
 
                             $('#paginationNav').html(pagination); // Update pagination
                         } else {
-                            $('#reportsTable tbody').html('<tr><td colspan="5">No data available.</td></tr>');
+                            $('#reportsTable tbody').html(
+                                '<tr><td colspan="5">No data available.</td></tr>');
                             $('#totalData').text('Total Data: 0');
                         }
 
@@ -193,9 +210,11 @@
                             url: `{{ route('api.reports.destroy', '') }}/${id}`,
                             type: 'DELETE',
                             success: function(response) {
-                                Swal.fire('Berhasil', response.message, 'success').then(function() {
-                                    loadData(); // Reload data setelah berhasil menghapus
-                                });
+                                Swal.fire('Berhasil', response.message, 'success').then(
+                                    function() {
+                                        loadData
+                                            (); // Reload data setelah berhasil menghapus
+                                    });
                             },
                             error: function(xhr) {
                                 Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
@@ -207,6 +226,8 @@
 
             // Event handler untuk tombol delete all
             $('#deleteAllBtn').click(function() {
+                console.log('Delete All button clicked'); // Debugging: cek tombol di-klik
+
                 Swal.fire({
                     title: 'Konfirmasi Hapus Semua',
                     text: 'Apakah Anda yakin ingin menghapus semua laporan?',
@@ -218,22 +239,42 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        console.log(
+                        'User confirmed delete all'); // Debugging: cek apakah user mengonfirmasi
+
                         // Kirim permintaan DELETE untuk menghapus semua data
                         $.ajax({
-                            url: "{{ route('api.reports.deleteAll') }}", // Gunakan route API yang benar
-                            type: 'DELETE',
+                            url: "{{ route('api.reports.deleteAll') }}",
+                            type: 'DELETE', // Pastikan tipe adalah DELETE
+                            dataType: 'json',
                             success: function(response) {
-                                Swal.fire('Berhasil', response.message, 'success').then(function() {
-                                    loadData(); // Reload data setelah berhasil menghapus
-                                });
+                                console.log('Response:',
+                                response); // Periksa apakah respons sukses atau gagal
+                                if (response.success) {
+                                    Swal.fire('Berhasil', response.message, 'success')
+                                        .then(() => {
+                                            loadData
+                                        (); // Reload data setelah berhasil menghapus
+                                        });
+                                } else {
+                                    Swal.fire('Gagal', response.message, 'error');
+                                }
                             },
-                            error: function(xhr) {
+                            error: function(xhr, status, error) {
+                                console.log('AJAX Error: ', error);
+                                console.log('Response Status: ', xhr.status);
+                                console.log('Response Text: ', xhr.responseText);
                                 Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
                             }
                         });
+                    } else {
+                        console.log(
+                        'User canceled delete all'); // Debugging: cek jika user membatalkan
                     }
                 });
             });
+
+
 
             // Fungsi untuk format tanggal
             function formatDate(dateString) {

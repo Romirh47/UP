@@ -17,7 +17,7 @@ Route::apiResource('users', UsersController::class)->names([
     'destroy' => 'api.users.destroy',
 ]);
 
-// Route untuk model reports
+// Rute untuk model reports
 Route::apiResource('reports', ReportApiController::class)->names([
     'index' => 'api.reports.index',
     'store' => 'api.reports.store',
@@ -26,5 +26,8 @@ Route::apiResource('reports', ReportApiController::class)->names([
     'destroy' => 'api.reports.destroy',
 ]);
 
-// Route semua laporan
+// Rute untuk menghapus semua laporan
 Route::delete('/reports/deleteAll', [ReportApiController::class, 'deleteAll'])->name('api.reports.deleteAll');
+
+
+
